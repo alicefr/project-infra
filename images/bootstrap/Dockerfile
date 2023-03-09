@@ -14,7 +14,7 @@
 # limitations under the License.
 
 # Includes basic workspace setup, with gcloud and a bootstrap runner
-FROM fedora:36
+FROM fedora:37
 
 WORKDIR /workspace
 RUN mkdir -p /workspace
@@ -54,6 +54,7 @@ RUN dnf install -y \
     sudo \
     buildah \
     qemu-user-static \
+    bind-utils \
     wget \
     python3-jinja2 &&\
   dnf -y clean all
@@ -83,6 +84,9 @@ RUN dnf -y update; dnf -y reinstall shadow-utils && \
     ln -s /usr/bin/podman /usr/bin/docker
 
 VOLUME /var/lib/containers
+
+COPY storage.conf /etc/containers/storage.conf
+RUN mkdir -p /var/lib/shared-images
 
 COPY containers.conf /etc/containers/containers.conf
 COPY podman.json /etc/containers/networks/podman.json

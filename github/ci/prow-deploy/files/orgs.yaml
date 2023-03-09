@@ -20,6 +20,7 @@ orgs:
     has_repository_projects: true
     location: ""
     members:
+      - jcanocan
       - 0xFelix
       - aburdenthehand
       - acardace
@@ -84,7 +85,7 @@ orgs:
       - idanshaby
       - ifireball
       - igoihman
-      - iholder-redhat
+      - iholder101
       - Barakmor1
       - ILpinto
       - InbarRose
@@ -357,6 +358,10 @@ orgs:
         description: Builds libguestfs appliances and container images to be consumed by other kubevirt projects
         has_projects: true
         homepage: https://kubevirt.io
+      kubesecondarydns:
+        allow_rebase_merge: false
+        allow_squash_merge: false
+        default_branch: main
       kubevirt:
         allow_rebase_merge: false
         allow_squash_merge: false
@@ -503,6 +508,12 @@ orgs:
         description: VM monitoring application based on WSGI, libvirt, flask and gevent, inspired by cAdvisor.
         has_projects: false
         has_wiki: false
+      vm-console-proxy:
+        allow_rebase_merge: false
+        allow_squash_merge: false
+        default_branch: main
+        description: Proxy for VM console connection.
+        has_projects: false
       vm-import-operator:
         allow_rebase_merge: false
         allow_squash_merge: false
@@ -572,6 +583,13 @@ orgs:
         privacy: secret
         repos:
           kubectl-virt-plugin: admin
+      kubesecondarydns:
+        description: ""
+        maintainers:
+        - AlonaKaplan
+        privacy: secret
+        repos:
+          kubesecondarydns: admin
       kubevirt_maintainers:
         description: kubevirt/kubevirt only maintainers
         maintainers:
@@ -740,6 +758,7 @@ orgs:
           must-gather: write
           node-maintenance-operator: write
           ssp-operator: write
+          vm-console-proxy: write
       ovirt-bot:
         description: ""
         maintainers:
@@ -829,6 +848,14 @@ orgs:
           - alicefr
         repos:
           test-benchmarks: admin
+      vm-console-proxy-maintainers:
+        description: "Maintainers of vm-console-proxy repository"
+        privacy: closed
+        maintainers:
+          - akrejcir
+          - dominikholler
+        repos:
+          vm-console-proxy: admin
       web-ui-maintainers:
         description: ""
         maintainers:
@@ -873,3 +900,31 @@ orgs:
           - ksimon1
         repos:
           common-instancetypes: admin
+      kubevirtorg-label:
+        description: "Users who can apply restricted labels to any issue inside the KubeVirt org"
+        members:
+         - davidvossel
+         - vladikr
+         - rmohr
+         - fabiand
+         - stu-gott
+         - vasiliy-ul
+         - rthallisey
+         - aburdenthehand
+      kubevirtkubevirt-label:
+        description: "Users who can apply restricted labels to any issue inside the kubevirt/kubevirt repo"
+        members:
+         - davidvossel
+         - vladikr
+         - rmohr
+         - stu-gott
+         - fabiand
+         - AlonaKaplan
+         - dhiller
+         - jean-edouard
+         - mhenriks
+         - enp0s3
+         - xpivarc
+         - vasiliy-ul
+         - acardace
+         - alicefr

@@ -96,9 +96,9 @@ func Test_writeReportToFileProducesValidOutput(t *testing.T) {
 	type args struct {
 		startOfReport time.Time
 		endOfReport   time.Time
+		ratings       []build.Rating
 		reports       []*flakefinder.JobResult
 		validators    []validation.ContentValidator
-		ratings       []build.Rating
 	}
 	tests := []struct {
 		name string
@@ -109,6 +109,31 @@ func Test_writeReportToFileProducesValidOutput(t *testing.T) {
 			args: args{
 				startOfReport: time.Now(),
 				endOfReport:   time.Now(),
+				ratings: []build.Rating{
+					{
+						Name:         "test-build-1",
+						Source:       "https://source/test-build-1",
+						StartFrom:    24 * time.Hour,
+						BuildNumbers: []int64{int64(17), int64(42)},
+						BuildNumbersToData: map[int64]build.BuildData{
+							int64(17): {
+								Number:   int64(17),
+								Failures: int64(99),
+								Sigma:    float64(4.0),
+							},
+							int64(42): {
+								Number:   int64(42),
+								Failures: int64(13),
+								Sigma:    float64(2.0),
+							},
+						},
+						TotalCompletedBuilds: 2,
+						TotalFailures:        131,
+						Mean:                 17,
+						Variance:             23,
+						StandardDeviation:    1.23,
+					},
+				},
 				reports: []*flakefinder.JobResult{
 					{
 						Job: "job1",
@@ -162,6 +187,31 @@ func Test_writeReportToFileProducesValidOutput(t *testing.T) {
 			args: args{
 				startOfReport: time.Now(),
 				endOfReport:   time.Now(),
+				ratings: []build.Rating{
+					{
+						Name:         "test-build-1",
+						Source:       "https://source/test-build-1",
+						StartFrom:    24 * time.Hour,
+						BuildNumbers: []int64{int64(17), int64(42)},
+						BuildNumbersToData: map[int64]build.BuildData{
+							int64(17): {
+								Number:   int64(17),
+								Failures: int64(99),
+								Sigma:    float64(4.0),
+							},
+							int64(42): {
+								Number:   int64(42),
+								Failures: int64(13),
+								Sigma:    float64(2.0),
+							},
+						},
+						TotalCompletedBuilds: 2,
+						TotalFailures:        131,
+						Mean:                 17,
+						Variance:             23,
+						StandardDeviation:    1.23,
+					},
+				},
 				reports: []*flakefinder.JobResult{
 					{
 						Job: "job1",
@@ -274,6 +324,89 @@ func Test_writeReportToFileProducesValidOutput(t *testing.T) {
 				if err != nil {
 					t.Errorf("Report:\n%s\n\nfailed to validate report file: %v", targetFileName, err)
 				}
+			}
+		})
+	}
+}
+
+func Test_writeReportToFileCreatesTags(t *testing.T) {
+	type args struct {
+		startOfReport time.Time
+		endOfReport   time.Time
+		reports       []*flakefinder.JobResult
+		ratings       []build.Rating
+		expectations  []expectation
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "one job",
+			args: args{
+				startOfReport: time.Now(),
+				endOfReport:   time.Now(),
+				reports: []*flakefinder.JobResult{
+					{
+						Job: "job1",
+						JUnit: []junit.Suite{
+							{
+								Name:       "Suite 1",
+								Package:    "test.blah.package",
+								Properties: nil,
+								Tests: []junit.Test{
+									{
+										Name:       "[Serial][sig-operator]virt-handler canary upgrade [QUARANTINE]should successfully upgrade virt-handler",
+										Classname:  "testClass",
+										Duration:   37,
+										Status:     junit.StatusFailed,
+										Error:      nil,
+										Properties: nil,
+									},
+								},
+								SystemOut: "",
+								SystemErr: "",
+								Totals: junit.Totals{
+									Tests:    42,
+									Passed:   37,
+									Skipped:  17,
+									Failed:   11,
+									Error:    3,
+									Duration: 1742,
+								},
+							},
+						},
+						BuildNumber: 1,
+						PR:          42,
+					},
+				},
+				expectations: []expectation{
+					expectContains("Serial"),
+					expectContains("sig-operator"),
+					expectContains("QUARANTINE"),
+				},
+			},
+		},
+	}
+
+	tempDir, err := ioutil.TempDir("", "reportFile")
+	if err != nil {
+		t.Errorf("failed to create temp report file: %v", err)
+		return
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tempFile := filepath.Join(tempDir, "report.html")
+			writeReportToFile(tt.args.startOfReport, tt.args.endOfReport, tt.args.reports, tempFile, tt.args.ratings)
+
+			content, err := ioutil.ReadFile(tempFile)
+			if err != nil {
+				t.Errorf("failed to read temp report file: %v", err)
+				return
+			}
+
+			for _, expectation := range tt.args.expectations {
+				expectation.contains(string(content), t)
 			}
 		})
 	}

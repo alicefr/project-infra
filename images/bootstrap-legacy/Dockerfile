@@ -14,7 +14,7 @@
 # limitations under the License.
 
 # Includes basic workspace setup, with gcloud and a bootstrap runner
-FROM fedora:36
+FROM fedora:37
 
 WORKDIR /workspace
 RUN mkdir -p /workspace
@@ -54,6 +54,7 @@ RUN dnf install -y \
     sudo \
     buildah \
     qemu-user-static \
+    bind-utils \
     wget &&\
   dnf -y clean all
 

@@ -9,10 +9,10 @@ plank:
       timeout: 2h
       grace_period: 15s
       utility_images:
-        clonerefs: "gcr.io/k8s-prow/clonerefs:v20220915-cd08dd395d"
-        initupload: "gcr.io/k8s-prow/initupload:v20220915-cd08dd395d"
-        entrypoint: "gcr.io/k8s-prow/entrypoint:v20220915-cd08dd395d"
-        sidecar: "gcr.io/k8s-prow/sidecar:v20220915-cd08dd395d"
+        clonerefs: "gcr.io/k8s-prow/clonerefs:v20230104-cc182b7760"
+        initupload: "gcr.io/k8s-prow/initupload:v20230104-cc182b7760"
+        entrypoint: "gcr.io/k8s-prow/entrypoint:v20230104-cc182b7760"
+        sidecar: "gcr.io/k8s-prow/sidecar:v20230104-cc182b7760"
       gcs_configuration:
         bucket: "kubevirt-prow"
         path_strategy: "explicit"
@@ -89,7 +89,7 @@ tide:
     kubevirt/libguestfs-appliance: merge
     kubevirt/containerized-data-importer: squash
     kubevirt/cluster-api-provider-kubevirt: merge
-    kubevirt/containerdisks: squash
+    kubevirt/containerdisks: merge
     kubevirt/kubevirt: merge
     kubevirt/machine-remediation-operator: squash
     kubevirt/project-infra: squash
@@ -105,6 +105,7 @@ tide:
     k8snetworkplumbingwg/ovs-cni: squash
     kubevirt/macvtap-cni: merge
     kubevirt/cluster-network-addons-operator: squash
+    kubevirt/kubesecondarydns: merge
     kubevirt/bridge-marker: squash
     nmstate/kubernetes-nmstate: squash
     k8snetworkplumbingwg/kubemacpool: squash
@@ -112,8 +113,8 @@ tide:
     kubevirt/node-maintenance-operator: merge
     kubevirt/ansible-kubevirt-modules: squash
     kubevirt/hyperconverged-cluster-operator: squash
-    kubevirt/common-instancetypes: squash
-    kubevirt/common-templates: squash
+    kubevirt/common-instancetypes: merge
+    kubevirt/common-templates: merge
     kubevirt/kvm-info-nfd-plugin: squash
     kubevirt/cpu-nfd-plugin: squash
     kubevirt/node-labeller: squash
@@ -129,11 +130,13 @@ tide:
     kubevirt/cloud-provider-kubevirt: merge
     kubevirt/secrets: merge
     kubevirt/test-benchmarks: merge
+    kubevirt/vm-console-proxy: merge
 
   queries:
   - repos:
     - kubevirt/libguestfs-appliance
     - kubevirt/project-infra
+    - kubevirt/kubesecondarydns
     - kubevirt/cluster-api-provider-kubevirt
     - kubevirt/machine-remediation-operator
     - kubevirt/kubevirtci
@@ -186,6 +189,7 @@ tide:
     - kubevirt/ssp-operator
     - kubevirt/must-gather
     - kubevirt/csi-driver
+    - kubevirt/vm-console-proxy
     labels:
     - lgtm
     - approved
@@ -408,6 +412,10 @@ branch-protection:
           branches:
             main:
               protect: true
+        kubesecondarydns:
+          branches:
+            main:
+              protect: true
     k8snetworkplumbingwg:
       repos:
         kubemacpool:
@@ -450,6 +458,17 @@ presets:
   volumeMounts:
   - name: podman-data
     mountPath: /var/lib/containers
+- labels:
+    preset-podman-shared-images: "true"
+  volumes:
+  - name: podman-shared-images
+    hostPath:
+      path: /var/lib/shared-images
+      type: Directory
+  volumeMounts:
+  - name: podman-shared-images
+    mountPath: /var/lib/shared-images
+    readOnly: true
 - labels:
     preset-docker-mirror: "true"
   volumes:
@@ -609,6 +628,16 @@ presets:
   - name: gcs
     mountPath: /etc/gcs
     readOnly: true
+- labels:
+    preset-pgp-bot-key: "true"
+  volumeMounts:
+  - mountPath: /etc/pgp
+    name: pgp-bot-key
+    readOnly: true
+  volumes:
+  - name: pgp-bot-key
+    secret:
+      secretName: pgp-bot-key
 
 # default preset with no labels, settings common to all jobs
 - env:

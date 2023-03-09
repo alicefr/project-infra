@@ -10,7 +10,7 @@ periodics:
   cluster: ibm-prow-jobs
   spec:
     containers:
-    - image: quay.io/kubevirtci/flakefinder:v20221007-a2417698
+    - image: quay.io/kubevirtci/flakefinder:v20230112-ec14f598
       command:
       - "/app/robots/cmd/flakefinder/app.binary"
       args:
@@ -32,7 +32,7 @@ periodics:
   cluster: ibm-prow-jobs
   spec:
     containers:
-    - image: quay.io/kubevirtci/flakefinder:v20221007-a2417698
+    - image: quay.io/kubevirtci/flakefinder:v20230112-ec14f598
       command:
       - "/app/robots/cmd/flakefinder/app.binary"
       args:
@@ -54,7 +54,7 @@ periodics:
   cluster: ibm-prow-jobs
   spec:
     containers:
-    - image: quay.io/kubevirtci/flakefinder:v20221007-a2417698
+    - image: quay.io/kubevirtci/flakefinder:v20230112-ec14f598
       command:
       - "/app/robots/cmd/flakefinder/app.binary"
       args:
@@ -75,7 +75,7 @@ periodics:
     grace_period: 5m
   max_concurrency: 1
   labels:
-    preset-podman-in-container-enabled: "true"
+    preset-dind-enabled: "true"
     preset-docker-mirror-proxy: "true"
     preset-gcs-credentials: "true"
     preset-kubevirtci-quay-credential: "true"
@@ -89,7 +89,7 @@ periodics:
     nodeSelector:
       type: bare-metal-external
     containers:
-    - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+    - image: quay.io/kubevirtci/bootstrap-legacy:v20220810-a8f2e6c
       env:
       - name: DOCKER_PREFIX
         value: quay.io/kubevirt

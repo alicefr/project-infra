@@ -7,9 +7,9 @@ periodics:
   cluster: ibm-prow-jobs
   spec:
     containers:
-    - image: gcr.io/k8s-prow/commenter:v20210720-5548472063
+    - image: gcr.io/k8s-prow/commenter:v20230104-cc182b7760
       command:
-      - /app/robots/commenter/app.binary
+      - /ko-app/commenter
       args:
       - |-
         --query=is:pr
@@ -52,9 +52,9 @@ periodics:
   cluster: ibm-prow-jobs
   spec:
     containers:
-    - image: gcr.io/k8s-prow/commenter:v20210720-5548472063
+    - image: gcr.io/k8s-prow/commenter:v20230104-cc182b7760
       command:
-      - /app/robots/commenter/app.binary
+      - /ko-app/commenter
       args:
       - |-
         --query=org:kubevirt
@@ -81,9 +81,9 @@ periodics:
   cluster: ibm-prow-jobs
   spec:
     containers:
-    - image: gcr.io/k8s-prow/commenter:v20210720-5548472063
+    - image: gcr.io/k8s-prow/commenter:v20230104-cc182b7760
       command:
-      - /app/robots/commenter/app.binary
+      - /ko-app/commenter
       args:
       - |-
         --query=org:kubevirt
@@ -109,9 +109,9 @@ periodics:
   cluster: ibm-prow-jobs
   spec:
     containers:
-    - image: gcr.io/k8s-prow/commenter:v20210720-5548472063
+    - image: gcr.io/k8s-prow/commenter:v20230104-cc182b7760
       command:
-      - /app/robots/commenter/app.binary
+      - /ko-app/commenter
       args:
       - |-
         --query=org:kubevirt
@@ -141,9 +141,9 @@ periodics:
   cluster: ibm-prow-jobs
   spec:
     containers:
-    - image: gcr.io/k8s-prow/commenter:v20210720-5548472063
+    - image: gcr.io/k8s-prow/commenter:v20230104-cc182b7760
       command:
-      - /app/robots/commenter/app.binary
+      - /ko-app/commenter
       args:
       - |-
         --query=org:kubevirt
@@ -206,49 +206,11 @@ periodics:
   cluster: ibm-prow-jobs
   spec:
     containers:
-      - image: quay.io/kubevirtci/indexpagecreator:v20210428-c869d6302-dirty
+      - image: quay.io/kubevirtci/indexpagecreator:v20230102-5ed6f7d7
         command:
           - "/app/robots/cmd/indexpagecreator/app.binary"
         args:
           - --dry-run=false
-- name: periodic-publish-multiarch-bootstrap-image
-  cron: "30 15 * * 6"
-  annotations:
-    testgrid-create-test-group: "false"
-  decorate: true
-  decoration_config:
-    grace_period: 5m0s
-    timeout: 5h0m0s
-  extra_refs:
-  - org: kubevirt
-    repo: project-infra
-    base_ref: main
-    work_dir: true
-  max_concurrency: 1
-  labels:
-    preset-dind-enabled: "true"
-    preset-kubevirtci-quay-credential: "true"
-  cluster: prow-workloads
-  spec:
-    containers:
-      - image: quay.io/kubevirtci/bootstrap-legacy:v20220810-a8f2e6c
-        command:
-          - "/usr/local/bin/runner.sh"
-          - "/bin/bash"
-          - "-c"
-          - |
-            cat "$QUAY_PASSWORD" | docker login --username $(cat "$QUAY_USER") --password-stdin=true quay.io
-            cd images
-            ./publish_multiarch_image.sh bootstrap quay.io kubevirtci
-            ./publish_multiarch_image.sh -l golang quay.io kubevirtci
-        # docker-in-docker needs privileged mode
-        securityContext:
-          privileged: true
-        resources:
-          requests:
-            memory: "8Gi"
-          limits:
-            memory: "8Gi"
 - name: periodic-kubevirt-mirror-uploader
   cron: "05 7 * * *"
   max_concurrency: 1
@@ -277,7 +239,7 @@ periodics:
     securityContext:
       runAsUser: 0
     containers:
-      - image: quay.io/kubevirt/builder:2203011706-a6a84d038
+      - image: quay.io/kubevirt/builder:2212180911-8818abcfa
         command: ["/bin/sh"]
         args:
           - "-c"
@@ -315,7 +277,7 @@ periodics:
     securityContext:
       runAsUser: 0
     containers:
-      - image: quay.io/kubevirt/builder:2203011706-a6a84d038
+      - image: quay.io/kubevirt/builder:2212180911-8818abcfa
         command: ["/bin/sh"]
         args:
           - "-c"
@@ -351,7 +313,7 @@ periodics:
     securityContext:
       runAsUser: 0
     containers:
-      - image: quay.io/kubevirtci/pr-creator:v20220927-5a02fb7
+      - image: quay.io/kubevirtci/pr-creator:v20230103-9f4e101
         command: ["/bin/sh"]
         args:
           - "-c"
@@ -383,7 +345,7 @@ periodics:
     securityContext:
       runAsUser: 0
     containers:
-      - image: quay.io/kubevirtci/pr-creator:v20220927-5a02fb7
+      - image: quay.io/kubevirtci/pr-creator:v20230103-9f4e101
         command: ["/bin/sh"]
         args:
           - "-ce"
@@ -425,7 +387,7 @@ periodics:
     securityContext:
       runAsUser: 0
     containers:
-      - image: quay.io/kubevirtci/pr-creator:v20220927-5a02fb7
+      - image: quay.io/kubevirtci/pr-creator:v20230103-9f4e101
         env:
         command: ["/bin/sh"]
         args:
@@ -455,7 +417,7 @@ periodics:
     securityContext:
       runAsUser: 0
     containers:
-      - image: quay.io/kubevirtci/pr-creator:v20220927-5a02fb7
+      - image: quay.io/kubevirtci/pr-creator:v20230103-9f4e101
         command: ["/bin/sh"]
         args:
           - "-ce"
@@ -496,9 +458,9 @@ periodics:
   spec:
     containers:
     - name: peribolos
-      image: gcr.io/k8s-prow/peribolos:v20210115-603a3a062d
+      image: gcr.io/k8s-prow/peribolos:v20230104-cc182b7760
       command:
-      - /app/prow/cmd/peribolos/app.binary
+      - /ko-app/peribolos
       args:
       - --github-endpoint=http://ghproxy
       - --github-endpoint=https://api.github.com
@@ -538,7 +500,7 @@ periodics:
     securityContext:
       runAsUser: 0
     containers:
-      - image: quay.io/kubevirt/builder:2203011706-a6a84d038
+      - image: quay.io/kubevirtci/pr-creator:v20230103-9f4e101
         command: ["/bin/sh"]
         args:
           - "-c"
@@ -567,7 +529,7 @@ periodics:
     securityContext:
       runAsUser: 0
     containers:
-      - image: quay.io/kubevirtci/pr-creator:v20220927-5a02fb7
+      - image: quay.io/kubevirtci/pr-creator:v20230103-9f4e101
         command: [ "/bin/sh" , "-c" ]
         args:
           - |
@@ -596,7 +558,7 @@ periodics:
     securityContext:
       runAsUser: 0
     containers:
-    - image: quay.io/kubevirtci/pr-creator:v20220927-5a02fb7
+    - image: quay.io/kubevirtci/pr-creator:v20230103-9f4e101
       env:
       command: [ "/bin/sh" , "-c" ]
       args:
@@ -627,7 +589,7 @@ periodics:
     securityContext:
       runAsUser: 0
     containers:
-    - image: quay.io/kubevirtci/pr-creator:v20220927-5a02fb7
+    - image: quay.io/kubevirtci/pr-creator:v20230103-9f4e101
       env:
       command: [ "/bin/sh" , "-c" ]
       args:
@@ -658,7 +620,7 @@ periodics:
     securityContext:
       runAsUser: 0
     containers:
-    - image: quay.io/kubevirtci/pr-creator:v20220927-5a02fb7
+    - image: quay.io/kubevirtci/pr-creator:v20230103-9f4e101
       env:
       command: [ "/bin/sh" , "-c" ]
       args:
@@ -688,7 +650,7 @@ periodics:
   cluster: prow-workloads
   spec:
     containers:
-      - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+      - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
         env:
           - name: BUCKET_DIR
             value: kubevirtci-istioctl-mirror
@@ -722,7 +684,7 @@ periodics:
     securityContext:
       runAsUser: 0
     containers:
-    - image: quay.io/kubevirtci/pr-creator:v20220927-5a02fb7
+    - image: quay.io/kubevirtci/pr-creator:v20230103-9f4e101
       command:
       - /usr/local/bin/runner.sh
       - /bin/sh
@@ -752,14 +714,15 @@ periodics:
     preset-docker-mirror: "true"
     preset-shared-images: "true"
     preset-github-credentials: "true"
+    preset-pgp-bot-key: "true"
   max_concurrency: 1
   name: periodic-project-infra-check-prow-jobconfigs
   spec:
     containers:
-    - image: quay.io/kubevirtci/golang:v20221105-0d76701
+    - image: quay.io/kubevirtci/golang:v20230105-1dbefc0
       env:
       - name: GIMME_GO_VERSION
-        value: "1.16"
+        value: "1.19"
       command:
       - "/usr/local/bin/runner.sh"
       - "/bin/sh"
@@ -778,11 +741,3 @@ periodics:
       resources:
         requests:
           memory: "1Gi"
-      volumeMounts:
-      - name: pgp-bot-key
-        mountPath: /etc/pgp
-        readOnly: true
-    volumes:
-    - name: pgp-bot-key
-      secret:
-        secretName: pgp-bot-key

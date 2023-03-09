@@ -387,6 +387,7 @@ presubmits:
       preset-bazel-cache: "true"
       preset-bazel-unnested: "true"
       preset-dind-enabled: "true"
+      preset-gcs-credentials: "true"
       preset-docker-mirror-proxy: "true"
       preset-shared-images: "true"
     max_concurrency: 1
@@ -1470,6 +1471,7 @@ presubmits:
       preset-github-credentials: "true"
       preset-kubevirtci-quay-credential: "true"
       preset-shared-images: "true"
+      preset-pgp-bot-key: "true"
     max_concurrency: 1
     name: pull-kubevirt-e2e-arm64-0.56
     optional: true
@@ -1524,16 +1526,8 @@ presubmits:
             memory: 29Gi
         securityContext:
           privileged: true
-        volumeMounts:
-        - mountPath: /etc/pgp
-          name: pgp-bot-key
-          readOnly: true
       nodeSelector:
         type: bare-metal-external
-      volumes:
-      - name: pgp-bot-key
-        secret:
-          secretName: pgp-bot-key
   - always_run: false
     branches:
     - release-0.56

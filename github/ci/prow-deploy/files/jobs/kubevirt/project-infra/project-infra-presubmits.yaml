@@ -6,7 +6,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-      - image: gcr.io/k8s-prow/checkconfig:v20220325-bc0e092550
+      - image: gcr.io/k8s-prow/checkconfig:v20230104-cc182b7760
         args:
         - "/ko-app/checkconfig"
         - "--config-path"
@@ -28,7 +28,7 @@ presubmits:
       preset-bazel-cache: "true"
     spec:
       containers:
-      - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+      - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
         command:
           - "/bin/bash"
           - "-c"
@@ -47,7 +47,7 @@ presubmits:
       preset-bazel-cache: "true"
     spec:
       containers:
-      - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+      - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
         command:
           - "/bin/bash"
           - "-c"
@@ -66,7 +66,7 @@ presubmits:
       preset-bazel-cache: "true"
     spec:
       containers:
-      - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+      - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
         command:
         - "/usr/local/bin/runner.sh"
         - "/bin/sh"
@@ -79,6 +79,28 @@ presubmits:
             memory: "8Gi"
           limits:
             memory: "8Gi"
+  - name: pull-project-infra-test-github-ci-services
+    run_if_changed: "github/ci/services/.*|WORKSPACE|go_third_party.bzl"
+    optional: false
+    decorate: true
+    cluster: ibm-prow-jobs
+    labels:
+      preset-bazel-cache: "true"
+    spec:
+      containers:
+      - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        command:
+        - "/usr/local/bin/runner.sh"
+        - "/bin/sh"
+        - "-c"
+        - "bazel build //github/ci/services/..."
+        resources:
+          requests:
+            memory: "2Gi"
+          limits:
+            memory: "2Gi"
+        securityContext:
+          runAsUser: 0
   - name: build-kubevirt-infra-bootstrap-image
     always_run: false
     run_if_changed: "images/kubevirt-infra-bootstrap/.*"
@@ -90,7 +112,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -115,7 +137,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -129,9 +151,9 @@ presubmits:
             privileged: true
           resources:
             requests:
-              memory: "1Gi"
+              memory: "4Gi"
             limits:
-              memory: "1Gi"
+              memory: "4Gi"
   - name: build-bootstrap-legacy-images
     always_run: false
     run_if_changed: "images/bootstrap-legacy/.*|images/golang-legacy/.*"
@@ -142,7 +164,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -156,9 +178,35 @@ presubmits:
             privileged: true
           resources:
             requests:
-              memory: "1Gi"
+              memory: "4Gi"
             limits:
-              memory: "1Gi"
+              memory: "4Gi"
+  - name: build-shared-images-controller-image
+    always_run: false
+    run_if_changed: "images/shared-images-controller/.*"
+    decorate: true
+    labels:
+      preset-podman-in-container-enabled: "true"
+      preset-docker-mirror-proxy: "true"
+    cluster: ibm-prow-jobs
+    spec:
+      containers:
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          command:
+            - "/usr/local/bin/runner.sh"
+            - "/bin/bash"
+            - "-ce"
+            - |
+              cd images
+              ./publish_image.sh -b shared-images-controller quay.io kubevirtci
+          # docker-in-docker needs privileged mode
+          securityContext:
+            privileged: true
+          resources:
+            requests:
+              memory: "4Gi"
+            limits:
+              memory: "4Gi"
   - name: build-kubekins-e2e-image
     always_run: false
     run_if_changed: "images/kubekins-e2e/.*"
@@ -170,7 +218,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -201,7 +249,7 @@ presubmits:
       base_ref: main
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -229,7 +277,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -256,7 +304,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -283,7 +331,7 @@ presubmits:
     cluster: prow-workloads
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -310,7 +358,7 @@ presubmits:
     cluster: prow-workloads
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -339,7 +387,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -364,7 +412,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -383,9 +431,10 @@ presubmits:
     run_if_changed: "github/ci/prow-deploy/.*"
     decorate: true
     labels:
-      preset-dind-enabled: "true"
+      preset-podman-in-container-enabled: "true"
       preset-docker-mirror-proxy: "true"
       preset-gcs-credentials: "true"
+      preset-pgp-bot-key: "true"
     cluster: prow-workloads
     spec:
       nodeSelector:
@@ -393,7 +442,7 @@ presubmits:
       securityContext:
         runAsUser: 0
       containers:
-        - image: quay.io/kubevirtci/prow-deploy:v20210924-4c47964
+        - image: quay.io/kubevirtci/prow-deploy:v20230124-4015612
           env:
           - name: GITHUB_TOKEN
             value: "/etc/github/oauth"
@@ -413,17 +462,11 @@ presubmits:
           volumeMounts:
           - name: molecule-docker
             mountPath: /tmp/prow-deploy-molecule
-          - name: pgp-bot-key
-            mountPath: /etc/pgp
-            readOnly: true
           - name: unprivileged-token
             mountPath: /etc/github
       volumes:
       - name: molecule-docker
         emptyDir: {}
-      - name: pgp-bot-key
-        secret:
-          secretName: pgp-bot-key
       - name: unprivileged-token
         secret:
           secretName: unprivileged-oauth-token
@@ -439,7 +482,7 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -476,7 +519,7 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -513,7 +556,7 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -550,7 +593,7 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -587,7 +630,7 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -624,7 +667,7 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -662,7 +705,7 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20221105-0d76701
+        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -701,7 +744,7 @@ presubmits:
       base_ref: master
     spec:
       containers:
-      - image: quay.io/kubevirtci/golang:v20221105-0d76701
+      - image: quay.io/kubevirtci/golang:v20230105-1dbefc0
         command:
         - github/ci/testgrid/hack/check.sh
         securityContext:
@@ -729,9 +772,9 @@ presubmits:
     spec:
       containers:
       - name: peribolos
-        image: gcr.io/k8s-prow/peribolos:v20210115-603a3a062d
+        image: gcr.io/k8s-prow/peribolos:v20230104-cc182b7760
         command:
-        - /app/prow/cmd/peribolos/app.binary
+        - /ko-app/peribolos
         args:
         - --github-endpoint=http://ghproxy
         - --github-endpoint=https://api.github.com
@@ -762,8 +805,8 @@ presubmits:
     spec:
       containers:
       - name: label-sync
-        image: gcr.io/k8s-prow/label_sync:v20200623-9f5410055c
-        command: [ "/app/label_sync/app.binary" ]
+        image: gcr.io/k8s-prow/label_sync:v20230104-cc182b7760
+        command: [ "/ko-app/label_sync" ]
         args:
         - --config=github/ci/prow-deploy/files/labels.yaml
         - --confirm=false
@@ -785,12 +828,36 @@ presubmits:
     spec:
       containers:
       - name: label-sync
-        image: gcr.io/k8s-prow/label_sync:v20200623-9f5410055c
-        command: [ "/app/label_sync/app.binary" ]
+        image: gcr.io/k8s-prow/label_sync:v20230104-cc182b7760
+        command: [ "/ko-app/label_sync" ]
         args:
         - --config=github/ci/prow-deploy/files/labels.yaml
         - --confirm=false
         - --only=nmstate/kubernetes-nmstate
         - --token=/etc/github/oauth
       restartPolicy: Never
-
+  - annotations:
+      testgrid-create-test-group: "false"
+    cluster: ibm-prow-jobs
+    decorate: true
+    decoration_config:
+      timeout: 1h
+      grace_period: 5m
+    name: pull-project-infra-job-config-validator
+    run_if_changed: 'robots/cmd/job-config-validator/.*|go.mod|go.sum'
+    spec:
+      containers:
+      - image: quay.io/kubevirtci/golang:v20230105-1dbefc0
+        env:
+        - name: GIMME_GO_VERSION
+          value: "1.19"
+        command:
+        - "/usr/local/bin/runner.sh"
+        - "/bin/sh"
+        - "-ce"
+        - |
+          ( cd robots/cmd/job-config-validator && go build ./... )
+          ./robots/cmd/job-config-validator/job-config-validator --help
+        resources:
+          requests:
+            memory: "100Mi"

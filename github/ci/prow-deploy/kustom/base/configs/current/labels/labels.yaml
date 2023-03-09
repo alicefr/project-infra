@@ -117,6 +117,12 @@ default:
       target: both
       prowPlugin: label
       addedBy: anyone
+    - name: kind/deprecation
+      description: Indicates the PR/issue deprecates a feature that will be removed in a subsequent release.
+      color: fdeb7e
+      target: both
+      prowPlugin: label
+      addedBy: anyone
     - color: 9192ff
       description: Categorizes as a Hacktoberfest contribution
       name: hacktoberfest
@@ -268,6 +274,12 @@ default:
       target: prs
       prowPlugin: trigger
       addedBy: prow
+    - name: good-first-issue
+      color: 128A0C
+      target: issues
+      previously:
+      - name: good first issue
+        color: 128A0C
 repos:
   kubevirt/kubevirt:
     labels:
@@ -295,12 +307,6 @@ repos:
       - name: for/users
         color: fef2c0
         target: both
-      - name: good-first-issue
-        color: 128A0C
-        target: issues
-        previously:
-          - name: good first issue
-            color: 128A0C
       - name: help-wanted
         color: 128A0C
         target: issues
