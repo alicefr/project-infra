@@ -2,7 +2,7 @@ presubmits:
   kubevirt/hyperconverged-cluster-operator:
   - name: pull-hyperconverged-cluster-operator-e2e-k8s-1.24
     branches:
-    - release-1.8
+    - release-1.9
     always_run: true
     optional: false
     decorate: true
@@ -33,7 +33,7 @@ presubmits:
             memory: "29Gi"
   - name: pull-hyperconverged-cluster-operator-e2e-k8s-1.25
     branches:
-    - release-1.8
+    - release-1.9
     always_run: true
     optional: false
     decorate: true

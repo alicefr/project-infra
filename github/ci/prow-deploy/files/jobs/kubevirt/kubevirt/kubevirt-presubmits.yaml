@@ -407,7 +407,7 @@ presubmits:
       preset-podman-in-container-enabled: "true"
       vgpu: "true"
     max_concurrency: 1
-    name: pull-kubevirt-e2e-kind-1.23-vgpu
+    name: pull-kubevirt-e2e-kind-1.25-vgpu
     skip_branches:
     - release-\d+\.\d+
     spec:
@@ -432,7 +432,7 @@ presubmits:
           automation/test.sh
         env:
         - name: TARGET
-          value: kind-1.23-vgpu
+          value: kind-1.25-vgpu
         image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
         name: ""
         resources:
@@ -470,7 +470,7 @@ presubmits:
           path: /var/log/audit
           type: Directory
         name: audit
-  - always_run: true
+  - always_run: false
     annotations:
       fork-per-release: "true"
       k8s.v1.cni.cncf.io/networks: multus-cni-ns/sriov-passthrough-cni,multus-cni-ns/sriov-passthrough-cni
@@ -518,6 +518,85 @@ presubmits:
         env:
         - name: TARGET
           value: kind-1.23-sriov
+        image: quay.io/kubevirtci/bootstrap-legacy:v20220810-a8f2e6c
+        name: ""
+        resources:
+          requests:
+            memory: 29Gi
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /lib/modules
+          name: modules
+          readOnly: true
+        - mountPath: /sys/fs/cgroup
+          name: cgroup
+        - mountPath: /dev/vfio/
+          name: vfio
+      nodeSelector:
+        hardwareSupport: sriov-nic
+      priorityClassName: sriov
+      volumes:
+      - hostPath:
+          path: /lib/modules
+          type: Directory
+        name: modules
+      - hostPath:
+          path: /sys/fs/cgroup
+          type: Directory
+        name: cgroup
+      - hostPath:
+          path: /dev/vfio/
+          type: Directory
+        name: vfio
+  - always_run: true
+    annotations:
+      fork-per-release: "true"
+      k8s.v1.cni.cncf.io/networks: multus-cni-ns/sriov-passthrough-cni,multus-cni-ns/sriov-passthrough-cni
+      testgrid-dashboards: kubevirt-presubmits
+    cluster: prow-workloads
+    decorate: true
+    decoration_config:
+      grace_period: 30m0s
+      timeout: 4h0m0s
+    labels:
+      preset-bazel-unnested: "true"
+      preset-dind-enabled: "true"
+      preset-docker-mirror-proxy: "true"
+      preset-shared-images: "true"
+      rehearsal.allowed: "true"
+      sriov-pod: "true"
+    max_concurrency: 10
+    name: pull-kubevirt-e2e-k3d-1.25-sriov
+    skip_branches:
+    - release-\d+\.\d+
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: sriov-pod
+                operator: In
+                values:
+                - "true"
+            topologyKey: kubernetes.io/hostname
+          - labelSelector:
+              matchExpressions:
+              - key: sriov-pod-multi
+                operator: In
+                values:
+                - "true"
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - command:
+        - /usr/local/bin/runner.sh
+        - /bin/bash
+        - -c
+        - automation/test.sh
+        env:
+        - name: TARGET
+          value: k3d-1.25-sriov
         image: quay.io/kubevirtci/bootstrap-legacy:v20220810-a8f2e6c
         name: ""
         resources:
@@ -1135,6 +1214,51 @@ presubmits:
           privileged: true
       nodeSelector:
         type: bare-metal-external
+  - always_run: false
+    annotations:
+      fork-per-release: "true"
+      testgrid-dashboards: kubevirt-presubmits
+    cluster: prow-workloads
+    decorate: true
+    decoration_config:
+      grace_period: 5m0s
+      timeout: 4h0m0s
+    labels:
+      preset-bazel-cache: "true"
+      preset-bazel-unnested: "true"
+      preset-docker-mirror-proxy: "true"
+      preset-podman-in-container-enabled: "true"
+      preset-podman-shared-images: "true"
+      preset-shared-images: "true"
+      rehearsal.allowed: "true"
+    max_concurrency: 11
+    name: pull-kubevirt-e2e-k8s-1.26-sig-network-multus-v4
+    optional: true
+    skip_branches:
+    - release-\d+\.\d+
+    spec:
+      containers:
+      - command:
+        - /usr/local/bin/runner.sh
+        - /bin/sh
+        - -c
+        - automation/test.sh
+        env:
+        - name: TARGET
+          value: k8s-1.26-centos9-sig-network-no-istio
+        # Set cluster-up to not deploy Multus V3 from manifests, instead CNAO will deploy Multus V4,
+        # and make the test suite run the hotplug NICs tests.
+        - name: KUBEVIRT_WITH_MULTUS_V3
+          value: "false"
+        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        name: ""
+        resources:
+          requests:
+            memory: 29Gi
+        securityContext:
+          privileged: true
+      nodeSelector:
+        type: bare-metal-external
   - always_run: true
     annotations:
       fork-per-release: "true"
@@ -1413,7 +1537,7 @@ presubmits:
         - automation/test.sh
         env:
         - name: TARGET
-          value: k8s-1.26-sig-monitoring
+          value: k8s-1.26-centos9-sig-monitoring
         - name: KUBEVIRT_NUM_NODES
           value: "2"
         image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
