@@ -3,7 +3,7 @@ postsubmits:
   - name: push-release-hostpath-provisioner-operator-images
     branches:
     - release-v\d+\.\d+
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     always_run: true
     optional: false
     skip_report: true
@@ -18,7 +18,7 @@ postsubmits:
       preset-kubevirtci-quay-credential: "true"
     spec:
       containers:
-      - image: quay.io/kubevirtci/golang:v20230105-1dbefc0
+      - image: quay.io/kubevirtci/golang:v20230801-94954c0
         env:
         - name: DOCKER_REPO
           value: quay.io/kubevirt
@@ -31,6 +31,7 @@ postsubmits:
           make clean &&
           GOARCH=arm64 make manifest &&
           GOARCH=amd64 make manifest &&
+          GOARCH=ppc64le make manifest &&
           # Only push images on tags
           [ -z "$(git tag --points-at HEAD | head -1)" ] ||
           TAG="$(git tag --points-at HEAD | head -1)" make manifest-push
@@ -43,7 +44,7 @@ postsubmits:
   - name: push-latest-hostpath-provisioner-operator-images
     branches:
     - main
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     always_run: true
     optional: false
     skip_report: true
@@ -58,7 +59,7 @@ postsubmits:
       preset-kubevirtci-quay-credential: "true"
     spec:
       containers:
-      - image: quay.io/kubevirtci/golang:v20230105-1dbefc0
+      - image: quay.io/kubevirtci/golang:v20230801-94954c0
         env:
         - name: DOCKER_REPO
           value: quay.io/kubevirt
@@ -71,6 +72,7 @@ postsubmits:
           make clean &&
           GOARCH=arm64 make manifest &&
           GOARCH=amd64 make manifest &&
+          GOARCH=ppc64le make manifest &&
           make manifest-push
         # docker-in-docker needs privileged mode
         securityContext:
@@ -98,7 +100,7 @@ postsubmits:
       preset-kubevirtci-quay-credential: "false"
     spec:
       containers:
-      - image: quay.io/kubevirtci/golang:v20230105-1dbefc0
+      - image: quay.io/kubevirtci/golang:v20230801-94954c0
         env:
         - name: DOCKER_REPO
           value: quay.io/kubevirt

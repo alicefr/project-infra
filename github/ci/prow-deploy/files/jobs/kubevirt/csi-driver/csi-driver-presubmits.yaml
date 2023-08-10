@@ -21,7 +21,7 @@ presubmits:
         preset-shared-images: "true"
       spec:
         containers:
-          - image: quay.io/kubevirtci/golang:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/golang:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/sh"
@@ -57,7 +57,7 @@ presubmits:
         preset-shared-images: "true"
       spec:
         containers:
-          - image: quay.io/kubevirtci/golang:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/golang:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/sh"
@@ -93,7 +93,7 @@ presubmits:
         preset-shared-images: "true"
       spec:
         containers:
-          - image: quay.io/kubevirtci/golang:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/golang:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/sh"
@@ -109,7 +109,7 @@ presubmits:
               requests:
                 memory: "4Gi"
     - name: pull-csi-driver-e2e-k8s
-      cluster: prow-workloads
+      cluster: kubevirt-prow-workloads
       skip_branches:
         - release-\d+\.\d+
       annotations:
@@ -131,7 +131,7 @@ presubmits:
         nodeSelector:
           type: bare-metal-external
         containers:
-          - image: quay.io/kubevirtci/golang:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/golang:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/sh"
@@ -144,7 +144,7 @@ presubmits:
               requests:
                 memory: "29Gi"
     - name: pull-csi-driver-split-e2e-k8s
-      cluster: prow-workloads
+      cluster: kubevirt-prow-workloads
       skip_branches:
         - release-\d+\.\d+
       annotations:
@@ -166,7 +166,7 @@ presubmits:
         nodeSelector:
           type: bare-metal-external
         containers:
-          - image: quay.io/kubevirtci/golang:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/golang:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/sh"
@@ -179,7 +179,7 @@ presubmits:
               requests:
                 memory: "29Gi"
     - name: pull-csi-driver-split-k8s-suite-k8s
-      cluster: prow-workloads
+      cluster: kubevirt-prow-workloads
       skip_branches:
         - release-\d+\.\d+
       annotations:
@@ -201,7 +201,7 @@ presubmits:
         nodeSelector:
           type: bare-metal-external
         containers:
-          - image: quay.io/kubevirtci/golang:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/golang:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/sh"
@@ -232,7 +232,7 @@ presubmits:
         preset-bazel-cache: "true"
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             env:
               - name: COVERALLS_TOKEN_FILE
                 value: /root/.docker/secrets/coveralls/token

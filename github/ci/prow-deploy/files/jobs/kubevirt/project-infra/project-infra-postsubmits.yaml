@@ -13,14 +13,14 @@ postsubmits:
         preset-kubevirtci-quay-credential: "true"
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap-legacy:v20221205-e30b34a
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"
               - "-c"
               - |
                 cat "$QUAY_PASSWORD" | docker login --username $(cat "$QUAY_USER") --password-stdin=true quay.io
-                bazelisk run //external-plugins/rehearse/plugin:push
+                make -C external-plugins/rehearse push
             resources:
               requests:
                 memory: "8Gi"
@@ -39,7 +39,7 @@ postsubmits:
         preset-kubevirtci-quay-credential: "true"
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"
@@ -66,7 +66,7 @@ postsubmits:
       cluster: ibm-prow-jobs
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"
@@ -96,10 +96,10 @@ postsubmits:
       labels:
         preset-podman-in-container-enabled: "true"
         preset-kubevirtci-quay-credential: "true"
-      cluster: prow-workloads
+      cluster: kubevirt-prow-workloads
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"
@@ -130,7 +130,7 @@ postsubmits:
       cluster: ibm-prow-jobs
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"
@@ -161,7 +161,7 @@ postsubmits:
       cluster: ibm-prow-jobs
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"
@@ -192,7 +192,7 @@ postsubmits:
       cluster: ibm-prow-jobs
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"
@@ -227,7 +227,7 @@ postsubmits:
         base_ref: main
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"
@@ -259,7 +259,7 @@ postsubmits:
       cluster: ibm-prow-jobs
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"
@@ -289,7 +289,7 @@ postsubmits:
       cluster: ibm-prow-jobs
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"
@@ -316,10 +316,10 @@ postsubmits:
       labels:
         preset-podman-in-container-enabled: "true"
         preset-kubevirtci-quay-credential: "true"
-      cluster: prow-workloads
+      cluster: kubevirt-prow-workloads
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"
@@ -346,10 +346,10 @@ postsubmits:
       labels:
         preset-podman-in-container-enabled: "true"
         preset-kubevirtci-quay-credential: "true"
-      cluster: prow-workloads
+      cluster: kubevirt-prow-workloads
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"
@@ -374,14 +374,17 @@ postsubmits:
       annotations:
         testgrid-create-test-group: "false"
       decorate: true
+      decoration_config:
+        grace_period: 5m0s
+        timeout: 5h0m0s
       max_concurrency: 1
       labels:
         preset-podman-in-container-enabled: "true"
         preset-kubevirtci-quay-credential: "true"
-      cluster: ibm-prow-jobs
+      cluster: kubevirt-prow-workloads
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"
@@ -389,45 +392,15 @@ postsubmits:
               - |
                 cat "$QUAY_PASSWORD" | docker login --username $(cat "$QUAY_USER") --password-stdin=true quay.io
                 cd images
-                ./publish_image.sh vm-image-builder quay.io kubevirtci
+                ./publish_multiarch_image.sh vm-image-builder quay.io kubevirtci
             # docker-in-docker needs privileged mode
             securityContext:
               privileged: true
             resources:
               requests:
-                memory: "1Gi"
+                memory: "29Gi"
               limits:
-                memory: "1Gi"
-    - name: publish-kubot-image
-      always_run: false
-      run_if_changed: "images/kubot/.*"
-      annotations:
-        testgrid-create-test-group: "false"
-      decorate: true
-      max_concurrency: 1
-      labels:
-        preset-podman-in-container-enabled: "true"
-        preset-kubevirtci-quay-credential: "true"
-      cluster: ibm-prow-jobs
-      spec:
-        containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-            command:
-              - "/usr/local/bin/runner.sh"
-              - "/bin/bash"
-              - "-c"
-              - |
-                cat "$QUAY_PASSWORD" | docker login --username $(cat "$QUAY_USER") --password-stdin=true quay.io
-                cd images
-                ./publish_image.sh kubot quay.io kubevirtci
-            # docker-in-docker needs privileged mode
-            securityContext:
-              privileged: true
-            resources:
-              requests:
-                memory: "4Gi"
-              limits:
-                memory: "4Gi"
+                memory: "29Gi"
     - name: post-project-infra-prow-control-plane-deployment
       always_run: false
       run_if_changed: "github/ci/prow-deploy/.*"
@@ -447,7 +420,7 @@ postsubmits:
         securityContext:
           runAsUser: 0
         containers:
-        - image: quay.io/kubevirtci/prow-deploy:v20230124-4015612
+        - image: quay.io/kubevirtci/prow-deploy:v20230606-d5cd724
           env:
           - name: DEPLOY_ENVIRONMENT
             value: ibmcloud-production
@@ -461,9 +434,9 @@ postsubmits:
               memory: "8Gi"
             limits:
               memory: "8Gi"
-    - name: post-project-infra-prow-workloads-cluster-deployment
+    - name: post-project-infra-kubevirt-prow-workloads-deployment
       always_run: false
-      run_if_changed: "github/ci/prow-deploy/kustom/overlays/workloads-production/.*|github/ci/prow-deploy/kustom/componenets/.*"
+      run_if_changed: "github/ci/prow-deploy/kustom/overlays/kubevirt-prow-workloads/.*|github/ci/prow-deploy/kustom/components/.*"
       annotations:
         testgrid-create-test-group: "false"
       decorate: true
@@ -480,135 +453,15 @@ postsubmits:
         securityContext:
           runAsUser: 0
         containers:
-        - image: quay.io/kubevirtci/prow-deploy:v20230124-4015612
+        - image: quay.io/kubevirtci/prow-deploy:v20230606-d5cd724
           env:
           - name: DEPLOY_ENVIRONMENT
-            value: workloads-production
+            value: kubevirt-prow-workloads
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
             - "-c"
             - "github/ci/prow-deploy/hack/deploy.sh"
-          resources:
-            requests:
-              memory: "8Gi"
-            limits:
-              memory: "8Gi"
-    - name: post-project-infra-prow-workloads-bootstrap-nodes
-      always_run: false
-      annotations:
-        testgrid-create-test-group: "false"
-      decorate: true
-      branches:
-      # regex for semver from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
-      - ^prow-workloads-bootstrap-nodes-v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
-      labels:
-        preset-docker-mirror-proxy: "true"
-        preset-gcs-credentials: "true"
-        preset-github-credentials: "true"
-        preset-pgp-bot-key: "true"
-      skip_report: false
-      cluster: ibm-prow-jobs
-      spec:
-        securityContext:
-          runAsUser: 0
-        containers:
-        - image: quay.io/kubevirtci/prow-deploy:v20230124-4015612
-          env:
-          - name: DEPLOY_ENVIRONMENT
-            value: workloads-production
-          command:
-            - "/usr/local/bin/runner.sh"
-            - "/bin/bash"
-            - "-c"
-            - "github/ci/prow-workloads/hack/bootstrap.sh"
-          resources:
-            requests:
-              memory: "8Gi"
-            limits:
-              memory: "8Gi"
-    - name: post-project-infra-prow-workloads-services-deployment
-      always_run: false
-      annotations:
-        testgrid-create-test-group: "false"
-      decorate: true
-      branches:
-      # regex for semver from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
-      - ^prow-workloads-services-v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
-      labels:
-        preset-docker-mirror-proxy: "true"
-        preset-gcs-credentials: "true"
-        preset-github-credentials: "true"
-        preset-pgp-bot-key: "true"
-      skip_report: false
-      cluster: ibm-prow-jobs
-      spec:
-        securityContext:
-          runAsUser: 0
-        containers:
-        - image: quay.io/kubespray/kubespray:v2.15.0
-          command:
-            - "/bin/bash"
-            - "-c"
-            - "./github/ci/prow-workloads/hack/deploy.sh"
-          resources:
-            requests:
-              memory: "8Gi"
-            limits:
-              memory: "8Gi"
-    - name: post-project-infra-prow-arm-workloads-bootstrap-nodes
-      always_run: false
-      annotations:
-        testgrid-create-test-group: "false"
-      decorate: true
-      branches:
-      # regex for semver from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
-      - ^prow-arm-workloads-bootstrap-nodes-v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
-      labels:
-        preset-docker-mirror-proxy: "true"
-        preset-gcs-credentials: "true"
-        preset-github-credentials: "true"
-        preset-pgp-bot-key: "true"
-      skip_report: false
-      cluster: ibm-prow-jobs
-      spec:
-        securityContext:
-          runAsUser: 0
-        containers:
-        - image: quay.io/kubespray/kubespray:v2.15.0
-          command:
-            - "/bin/bash"
-            - "-c"
-            - "./github/ci/prow-arm-workloads/hack/bootstrap.sh"
-          resources:
-            requests:
-              memory: "8Gi"
-            limits:
-              memory: "8Gi"
-    - name: post-project-infra-prow-arm-workloads-cluster-deployment
-      always_run: false
-      annotations:
-        testgrid-create-test-group: "false"
-      decorate: true
-      branches:
-      # regex for semver from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
-      - ^prow-arm-workloads-cluster-deployment-v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
-      labels:
-        preset-docker-mirror-proxy: "true"
-        preset-gcs-credentials: "true"
-        preset-github-credentials: "true"
-        preset-pgp-bot-key: "true"
-      skip_report: false
-      cluster: ibm-prow-jobs
-      spec:
-        securityContext:
-          runAsUser: 0
-        containers:
-        - image: quay.io/kubespray/kubespray:v2.15.0
-          command:
-            - "/bin/bash"
-            - "-c"
-            - "./github/ci/prow-arm-workloads/hack/deploy.sh"
           resources:
             requests:
               memory: "8Gi"
@@ -631,7 +484,7 @@ postsubmits:
         securityContext:
           runAsUser: 0
         containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -669,7 +522,7 @@ postsubmits:
         securityContext:
           runAsUser: 0
         containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -707,7 +560,7 @@ postsubmits:
         securityContext:
           runAsUser: 0
         containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -723,43 +576,6 @@ postsubmits:
               extract_secret 'gcsServiceAccount' ./github/ci/services/loki/secrets/production-control-plane/gcs/service-account.json
 
               ./github/ci/services/loki/hack/deploy.sh production-control-plane
-          resources:
-            requests:
-              memory: "8Gi"
-            limits:
-              memory: "8Gi"
-    - name: post-project-infra-sippy-deployment
-      always_run: false
-      annotations:
-        testgrid-create-test-group: "false"
-      decorate: true
-      run_if_changed: "github/ci/services/sippy.*"
-      branches:
-      - ^main$
-      labels:
-        preset-docker-mirror-proxy: "true"
-        preset-github-credentials: "true"
-        preset-pgp-bot-key: "true"
-      cluster: ibm-prow-jobs
-      spec:
-        securityContext:
-          runAsUser: 0
-        containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-          command:
-            - "/usr/local/bin/runner.sh"
-            - "/bin/bash"
-            - "-c"
-            - |
-              # install yq
-              curl -Lo ./yq https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64
-              chmod +x ./yq && mv ./yq /usr/local/bin/yq
-
-              source ./hack/manage-secrets.sh
-              decrypt_secrets
-              extract_secret 'kubeconfig' ~/.kube/config
-
-              ./github/ci/services/sippy/hack/deploy.sh production
           resources:
             requests:
               memory: "8Gi"
@@ -782,7 +598,7 @@ postsubmits:
         securityContext:
           runAsUser: 0
         containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -805,91 +621,11 @@ postsubmits:
               extract_secret 'alertmanager.slack.apiURL' ./github/ci/services/prometheus-stack/secrets/production-e2e-workloads/slack-config/apiURL
 
               ./github/ci/services/prometheus-stack/hack/deploy.sh production-control-plane
-              ./github/ci/services/prometheus-stack/hack/deploy.sh production-e2e-workloads
 
               extract_secret 'kubeconfigPerf' ~/.kube/config
               extract_secret 'grafanaUserPerf' ./github/ci/services/prometheus-stack/secrets/production-performance-workloads/grafana/admin-user
               extract_secret 'grafanaPasswordPerf' ./github/ci/services/prometheus-stack/secrets/production-performance-workloads/grafana/admin-password
               ./github/ci/services/prometheus-stack/hack/deploy.sh production-performance-workloads
-          resources:
-            requests:
-              memory: "8Gi"
-            limits:
-              memory: "8Gi"
-    - name: post-project-infra-kuberhealthy-deployment
-      always_run: false
-      annotations:
-        testgrid-create-test-group: "false"
-      decorate: true
-      run_if_changed: "github/ci/services/kuberhealthy.*"
-      branches:
-      - ^main$
-      labels:
-        preset-docker-mirror-proxy: "true"
-        preset-github-credentials: "true"
-        preset-pgp-bot-key: "true"
-      cluster: ibm-prow-jobs
-      spec:
-        securityContext:
-          runAsUser: 0
-        containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-          command:
-            - "/usr/local/bin/runner.sh"
-            - "/bin/bash"
-            - "-c"
-            - |
-              # install yq
-              curl -Lo ./yq https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64
-              chmod +x ./yq && mv ./yq /usr/local/bin/yq
-
-              source ./hack/manage-secrets.sh
-              decrypt_secrets
-
-              extract_secret 'kubeconfig' ~/.kube/config
-
-              ./github/ci/services/kuberhealthy/hack/deploy.sh production
-          resources:
-            requests:
-              memory: "8Gi"
-            limits:
-              memory: "8Gi"
-    - name: post-project-infra-kubot-deployment
-      always_run: false
-      annotations:
-        testgrid-create-test-group: "false"
-      decorate: true
-      run_if_changed: "github/ci/services/kubot.*"
-      branches:
-      - ^main$
-      labels:
-        preset-bazel-cache: "true"
-        preset-docker-mirror-proxy: "true"
-        preset-github-credentials: "true"
-        preset-pgp-bot-key: "true"
-      cluster: ibm-prow-jobs
-      spec:
-        securityContext:
-          runAsUser: 0
-        containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-          command:
-            - "/usr/local/bin/runner.sh"
-            - "/bin/bash"
-            - "-c"
-            - |
-              # install yq
-              curl -Lo ./yq https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64
-              chmod +x ./yq && mv ./yq /usr/local/bin/yq
-
-              source ./hack/manage-secrets.sh
-              decrypt_secrets
-
-              extract_secret 'kubeconfig' ~/.kube/config
-              extract_secret 'kubeconfig' ./github/ci/services/kubot/secrets/production/kubeconfig/config
-              extract_secret 'kubot.slackToken' ./github/ci/services/kubot/secrets/production/slack-token/token
-
-              ./github/ci/services/kubot/hack/deploy.sh production
           resources:
             requests:
               memory: "8Gi"
@@ -907,7 +643,7 @@ postsubmits:
       cluster: ibm-prow-jobs
       spec:
         containers:
-        - image: gcr.io/k8s-prow/configurator:v20230104-cc182b7760
+        - image: gcr.io/k8s-prow/configurator:v20230802-d51826a399
           command:
           - /ko-app/configurator
           args:
@@ -934,7 +670,7 @@ postsubmits:
         preset-bazel-cache: "true"
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"
@@ -942,6 +678,36 @@ postsubmits:
               - |
                 cat "$QUAY_PASSWORD" | docker login --username $(cat "$QUAY_USER") --password-stdin=true quay.io
                 bazelisk run //robots/cmd/ci-usage-exporter:push
+            resources:
+              requests:
+                memory: "8Gi"
+              limits:
+                memory: "8Gi"
+    - name: publish-test-report-image
+      always_run: false
+      run_if_changed: "robots/.*/test-report/.*"
+      annotations:
+        testgrid-create-test-group: "false"
+      decorate: true
+      cluster: ibm-prow-jobs
+      max_concurrency: 1
+      labels:
+        preset-podman-in-container-enabled: "true"
+        preset-kubevirtci-quay-credential: "true"
+        preset-bazel-cache: "true"
+      spec:
+        containers:
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
+            command:
+              - "/usr/local/bin/runner.sh"
+              - "/bin/bash"
+              - "-c"
+              - |
+                cat "$QUAY_PASSWORD" | docker login --username $(cat "$QUAY_USER") --password-stdin=true quay.io
+                make -C ./robots/cmd/test-report push
+            # docker-in-docker needs privileged mode
+            securityContext:
+              privileged: true
             resources:
               requests:
                 memory: "8Gi"
@@ -959,7 +725,7 @@ postsubmits:
         preset-docker-mirror-proxy: "true"
       spec:
         containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command: ["/bin/sh"]
           args:
           - -c
@@ -979,7 +745,7 @@ postsubmits:
       always_run: false
       annotations:
         testgrid-create-test-group: "false"
-      cluster: prow-workloads
+      cluster: ibm-prow-jobs
       decorate: true
       decoration_config:
         grace_period: 5m
@@ -992,7 +758,7 @@ postsubmits:
         securityContext:
           runAsUser: 0
         containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           env:
           command:
           - /usr/local/bin/runner.sh

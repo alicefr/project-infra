@@ -4,91 +4,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
-    decorate: true
-    decoration_config:
-      grace_period: 5m0s
-      timeout: 7h0m0s
-    labels:
-      preset-bazel-cache: "true"
-      preset-bazel-unnested: "true"
-      preset-docker-mirror-proxy: "true"
-      preset-podman-in-container-enabled: "true"
-      preset-podman-shared-images: "true"
-      preset-shared-images: "true"
-    max_concurrency: 11
-    name: pull-kubevirt-e2e-k8s-1.26-sig-compute-cgroupsv2
-    run_if_changed: pkg/virt-handler/cgroup/.*
-    skip_branches:
-    - release-\d+\.\d+
-    spec:
-      containers:
-      - command:
-        - /usr/local/bin/runner.sh
-        - /bin/sh
-        - -c
-        - automation/test.sh
-        env:
-        - name: TARGET
-          value: k8s-1.26-sig-compute
-        - name: KUBEVIRT_CGROUPV2
-          value: "true"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-        name: ""
-        resources:
-          requests:
-            memory: 29Gi
-        securityContext:
-          privileged: true
-      nodeSelector:
-        type: bare-metal-external
-  - always_run: false
-    annotations:
-      fork-per-release: "true"
-      testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
-    decorate: true
-    decoration_config:
-      grace_period: 5m0s
-      timeout: 7h0m0s
-    labels:
-      preset-bazel-cache: "true"
-      preset-bazel-unnested: "true"
-      preset-docker-mirror-proxy: "true"
-      preset-podman-in-container-enabled: "true"
-      preset-podman-shared-images: "true"
-      preset-shared-images: "true"
-    max_concurrency: 11
-    name: pull-kubevirt-e2e-k8s-1.24-sig-compute-cgroupsv2
-    run_if_changed: pkg/virt-handler/cgroup/.*
-    skip_branches:
-    - release-\d+\.\d+
-    spec:
-      containers:
-      - command:
-        - /usr/local/bin/runner.sh
-        - /bin/sh
-        - -c
-        - automation/test.sh
-        env:
-        - name: TARGET
-          value: k8s-1.24-sig-compute
-        - name: KUBEVIRT_CGROUPV2
-          value: "true"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-        name: ""
-        resources:
-          requests:
-            memory: 29Gi
-        securityContext:
-          privileged: true
-      nodeSelector:
-        type: bare-metal-external
-  - always_run: false
-    annotations:
-      fork-per-release: "true"
-      testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -117,7 +33,9 @@ presubmits:
           value: k8s-1.25-sig-compute
         - name: KUBEVIRT_CGROUPV2
           value: "true"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -130,7 +48,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: ibm-prow-jobs
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -162,97 +80,11 @@ presubmits:
             memory: 8Gi
         securityContext:
           privileged: true
-      nodeSelector:
-        type: bare-metal-external
   - always_run: false
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
-    decorate: true
-    decoration_config:
-      grace_period: 5m0s
-      timeout: 7h0m0s
-    labels:
-      preset-bazel-cache: "true"
-      preset-bazel-unnested: "true"
-      preset-docker-mirror-proxy: "true"
-      preset-podman-in-container-enabled: "true"
-      preset-podman-shared-images: "true"
-      preset-shared-images: "true"
-    max_concurrency: 11
-    name: pull-kubevirt-e2e-k8s-1.26-sig-storage-cgroupsv2
-    run_if_changed: pkg/virt-handler/cgroup/.*|pkg/virt-handler/hotplug-disk/.*|pkg/hotplug-disk/.*|cmd/virt-chroot/cgroup.go
-    skip_branches:
-    - release-\d+\.\d+
-    spec:
-      containers:
-      - command:
-        - /usr/local/bin/runner.sh
-        - /bin/sh
-        - -c
-        - automation/test.sh
-        env:
-        - name: TARGET
-          value: k8s-1.26-sig-storage
-        - name: KUBEVIRT_CGROUPV2
-          value: "true"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-        name: ""
-        resources:
-          requests:
-            memory: 29Gi
-        securityContext:
-          privileged: true
-      nodeSelector:
-        type: bare-metal-external
-  - always_run: false
-    annotations:
-      fork-per-release: "true"
-      testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
-    decorate: true
-    decoration_config:
-      grace_period: 5m0s
-      timeout: 7h0m0s
-    labels:
-      preset-bazel-cache: "true"
-      preset-bazel-unnested: "true"
-      preset-docker-mirror-proxy: "true"
-      preset-podman-in-container-enabled: "true"
-      preset-podman-shared-images: "true"
-      preset-shared-images: "true"
-    max_concurrency: 11
-    name: pull-kubevirt-e2e-k8s-1.24-sig-storage-cgroupsv2
-    run_if_changed: pkg/virt-handler/cgroup/.*|pkg/virt-handler/hotplug-disk/.*|pkg/hotplug-disk/.*|cmd/virt-chroot/cgroup.go
-    skip_branches:
-    - release-\d+\.\d+
-    spec:
-      containers:
-      - command:
-        - /usr/local/bin/runner.sh
-        - /bin/sh
-        - -c
-        - automation/test.sh
-        env:
-        - name: TARGET
-          value: k8s-1.24-sig-storage
-        - name: KUBEVIRT_CGROUPV2
-          value: "true"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-        name: ""
-        resources:
-          requests:
-            memory: 29Gi
-        securityContext:
-          privileged: true
-      nodeSelector:
-        type: bare-metal-external
-  - always_run: false
-    annotations:
-      fork-per-release: "true"
-      testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -281,7 +113,9 @@ presubmits:
           value: k8s-1.25-sig-storage
         - name: KUBEVIRT_CGROUPV2
           value: "true"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -294,7 +128,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -341,7 +175,7 @@ presubmits:
           value: "true"
         - name: KUBEVIRT_PROVIDER_EXTRA_ARGS
           value: --prometheus-port 30007
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -355,7 +189,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -382,7 +216,7 @@ presubmits:
         env:
         - name: TARGET
           value: windows2016
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -396,7 +230,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 30m0s
@@ -407,7 +241,7 @@ presubmits:
       preset-podman-in-container-enabled: "true"
       vgpu: "true"
     max_concurrency: 1
-    name: pull-kubevirt-e2e-kind-1.25-vgpu
+    name: pull-kubevirt-e2e-kind-1.27-vgpu
     skip_branches:
     - release-\d+\.\d+
     spec:
@@ -432,8 +266,8 @@ presubmits:
           automation/test.sh
         env:
         - name: TARGET
-          value: kind-1.25-vgpu
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          value: kind-1.27-vgpu
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -470,12 +304,12 @@ presubmits:
           path: /var/log/audit
           type: Directory
         name: audit
-  - always_run: false
+  - always_run: true
     annotations:
       fork-per-release: "true"
-      k8s.v1.cni.cncf.io/networks: multus-cni-ns/sriov-passthrough-cni,multus-cni-ns/sriov-passthrough-cni
+      k8s.v1.cni.cncf.io/networks: default/sriov-passthrough-cni,default/sriov-passthrough-cni
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 30m0s
@@ -488,7 +322,7 @@ presubmits:
       rehearsal.allowed: "true"
       sriov-pod: "true"
     max_concurrency: 10
-    name: pull-kubevirt-e2e-kind-1.23-sriov
+    name: pull-kubevirt-e2e-kind-1.27-sriov
     skip_branches:
     - release-\d+\.\d+
     spec:
@@ -517,86 +351,7 @@ presubmits:
         - automation/test.sh
         env:
         - name: TARGET
-          value: kind-1.23-sriov
-        image: quay.io/kubevirtci/bootstrap-legacy:v20220810-a8f2e6c
-        name: ""
-        resources:
-          requests:
-            memory: 29Gi
-        securityContext:
-          privileged: true
-        volumeMounts:
-        - mountPath: /lib/modules
-          name: modules
-          readOnly: true
-        - mountPath: /sys/fs/cgroup
-          name: cgroup
-        - mountPath: /dev/vfio/
-          name: vfio
-      nodeSelector:
-        hardwareSupport: sriov-nic
-      priorityClassName: sriov
-      volumes:
-      - hostPath:
-          path: /lib/modules
-          type: Directory
-        name: modules
-      - hostPath:
-          path: /sys/fs/cgroup
-          type: Directory
-        name: cgroup
-      - hostPath:
-          path: /dev/vfio/
-          type: Directory
-        name: vfio
-  - always_run: true
-    annotations:
-      fork-per-release: "true"
-      k8s.v1.cni.cncf.io/networks: multus-cni-ns/sriov-passthrough-cni,multus-cni-ns/sriov-passthrough-cni
-      testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
-    decorate: true
-    decoration_config:
-      grace_period: 30m0s
-      timeout: 4h0m0s
-    labels:
-      preset-bazel-unnested: "true"
-      preset-dind-enabled: "true"
-      preset-docker-mirror-proxy: "true"
-      preset-shared-images: "true"
-      rehearsal.allowed: "true"
-      sriov-pod: "true"
-    max_concurrency: 10
-    name: pull-kubevirt-e2e-k3d-1.25-sriov
-    skip_branches:
-    - release-\d+\.\d+
-    spec:
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: sriov-pod
-                operator: In
-                values:
-                - "true"
-            topologyKey: kubernetes.io/hostname
-          - labelSelector:
-              matchExpressions:
-              - key: sriov-pod-multi
-                operator: In
-                values:
-                - "true"
-            topologyKey: kubernetes.io/hostname
-      containers:
-      - command:
-        - /usr/local/bin/runner.sh
-        - /bin/bash
-        - -c
-        - automation/test.sh
-        env:
-        - name: TARGET
-          value: k3d-1.25-sriov
+          value: kind-1.27-sriov
         image: quay.io/kubevirtci/bootstrap-legacy:v20220810-a8f2e6c
         name: ""
         resources:
@@ -632,7 +387,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -654,7 +409,7 @@ presubmits:
         - /bin/sh
         - -c
         - TARGET_COMMIT=$PULL_BASE_SHA automation/repeated_test.sh
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -685,7 +440,7 @@ presubmits:
         - /bin/sh
         - -c
         - cp /etc/bazel.bazelrc ./ci.bazelrc && make generate-verify
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -716,7 +471,7 @@ presubmits:
         - /bin/sh
         - -c
         - cp /etc/bazel.bazelrc ./ci.bazelrc && make verify-rpm-deps
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -745,7 +500,7 @@ presubmits:
         - /bin/sh
         - -c
         - cp /etc/bazel.bazelrc ./ci.bazelrc && make deps-sync && hack/verify-generate.sh
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -777,7 +532,7 @@ presubmits:
         - /bin/sh
         - -c
         - cp /etc/bazel.bazelrc ./ci.bazelrc && make gosec
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -806,7 +561,7 @@ presubmits:
         - /bin/sh
         - -c
         - make test
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -835,7 +590,7 @@ presubmits:
         - /bin/sh
         - -c
         - cp /etc/bazel.bazelrc ./ci.bazelrc && make && make build-verify
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -867,7 +622,7 @@ presubmits:
         env:
         - name: BUILD_ARCH
           value: crossbuild-aarch64
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -897,7 +652,7 @@ presubmits:
         - /bin/sh
         - -c
         - make test
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -931,7 +686,7 @@ presubmits:
         env:
         - name: COVERALLS_TOKEN_FILE
           value: /root/.docker/secrets/coveralls/token
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -960,6 +715,7 @@ presubmits:
     optional: true
     skip_branches:
     - release-\d+\.\d+
+    skip_report: true
     spec:
       containers:
       - command:
@@ -970,7 +726,7 @@ presubmits:
         env:
         - name: FOSSA_TOKEN_FILE
           value: /root/.docker/secrets/fossa/token
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1007,7 +763,8 @@ presubmits:
         - /bin/sh
         - -c
         - cp /etc/bazel.bazelrc ./ci.bazelrc && make apidocs
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - # FIXME: reenable this lane after missing dependency issue has been resolved
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1036,7 +793,7 @@ presubmits:
         - /bin/sh
         - -c
         - cp /etc/bazel.bazelrc ./ci.bazelrc && make client-python
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1066,7 +823,7 @@ presubmits:
         - -c
         - cp /etc/bazel.bazelrc ./ci.bazelrc && make manifests DOCKER_PREFIX="docker.io/kubevirt"
           && make olm-verify
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1095,7 +852,7 @@ presubmits:
         - /bin/sh
         - -c
         - cp /etc/bazel.bazelrc ./ci.bazelrc && make prom-rules-verify
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1124,7 +881,7 @@ presubmits:
         - /bin/sh
         - -c
         - hack/check-unassigned-tests.sh
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1135,7 +892,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -1163,7 +920,9 @@ presubmits:
           value: k8s-1.25-sig-network
         - name: KUBEVIRT_SINGLE_STACK
           value: "true"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1176,7 +935,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -1205,7 +964,7 @@ presubmits:
           value: k8s-1.26-sig-network
         - name: KUBEVIRT_SINGLE_STACK
           value: "true"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1218,7 +977,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -1245,12 +1004,12 @@ presubmits:
         - automation/test.sh
         env:
         - name: TARGET
-          value: k8s-1.26-centos9-sig-network-no-istio
-        # Set cluster-up to not deploy Multus V3 from manifests, instead CNAO will deploy Multus V4,
-        # and make the test suite run the hotplug NICs tests.
+          value: k8s-1.26-centos9-sig-network
         - name: KUBEVIRT_WITH_MULTUS_V3
           value: "false"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1263,7 +1022,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -1276,7 +1035,7 @@ presubmits:
       preset-podman-shared-images: "true"
       preset-shared-images: "true"
     max_concurrency: 11
-    name: pull-kubevirt-e2e-k8s-1.25-sig-compute-migrations
+    name: pull-kubevirt-e2e-k8s-1.27-sig-compute-migrations
     skip_branches:
     - release-\d+\.\d+
     spec:
@@ -1288,51 +1047,14 @@ presubmits:
         - automation/test.sh
         env:
         - name: TARGET
-          value: k8s-1.25-sig-compute-migrations
+          value: k8s-1.27-sig-compute-migrations
         - name: KUBEVIRT_NUM_NODES
           value: "3"
         - name: KUBEVIRT_STORAGE
           value: rook-ceph-default
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-        name: ""
-        resources:
-          requests:
-            memory: 29Gi
-        securityContext:
-          privileged: true
-      nodeSelector:
-        type: bare-metal-external
-  - always_run: false
-    annotations:
-      fork-per-release: "true"
-      testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
-    decorate: true
-    decoration_config:
-      grace_period: 5m0s
-      timeout: 1h0m0s
-    labels:
-      preset-bazel-cache: "true"
-      preset-bazel-unnested: "true"
-      preset-docker-mirror-proxy: "true"
-      preset-podman-in-container-enabled: "true"
-      preset-podman-shared-images: "true"
-    max_concurrency: 11
-    name: pull-kubevirt-e2e-k8s-1.24-sig-compute-realtime
-    optional: true
-    skip_branches:
-    - release-\d+\.\d+
-    spec:
-      containers:
-      - command:
-        - /usr/local/bin/runner.sh
-        - /bin/sh
-        - -c
-        - automation/test.sh
-        env:
-        - name: TARGET
-          value: k8s-1.24-sig-compute-realtime
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1368,12 +1090,12 @@ presubmits:
           automation/test.sh
         env:
         - name: TARGET
-          value: kind-1.23
+          value: kind-1.27
         - name: KUBEVIRT_NUM_NODES
           value: "1"
         - name: KUBEVIRT_E2E_FOCUS
           value: arm64
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1405,7 +1127,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -1427,7 +1149,7 @@ presubmits:
         - -ce
         - |
           make builder-build
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1459,7 +1181,7 @@ presubmits:
         - -c
         - |
           make lint
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1470,7 +1192,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -1502,7 +1224,7 @@ presubmits:
           value: SwapTest
         - name: KUBEVIRT_SWAP_ON
           value: "true"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1514,11 +1236,11 @@ presubmits:
   - always_run: false
     annotations:
       fork-per-release: "true"
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
-      timeout: 1h30m0s
+      timeout: 2h0m0s
     labels:
       preset-bazel-cache: "true"
       preset-docker-mirror-proxy: "true"
@@ -1540,7 +1262,9 @@ presubmits:
           value: k8s-1.26-centos9-sig-monitoring
         - name: KUBEVIRT_NUM_NODES
           value: "2"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1551,7 +1275,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -1588,7 +1312,7 @@ presubmits:
           value: "true"
         - name: KUBEVIRT_STORAGE
           value: rook-ceph-default
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1601,163 +1325,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
-    decorate: true
-    decoration_config:
-      grace_period: 5m0s
-      timeout: 4h0m0s
-    labels:
-      preset-bazel-cache: "true"
-      preset-bazel-unnested: "true"
-      preset-docker-mirror-proxy: "true"
-      preset-podman-in-container-enabled: "true"
-      preset-podman-shared-images: "true"
-      preset-shared-images: "true"
-    max_concurrency: 11
-    name: pull-kubevirt-e2e-k8s-1.24-sig-network
-    skip_branches:
-    - release-\d+\.\d+
-    spec:
-      containers:
-      - command:
-        - /usr/local/bin/runner.sh
-        - /bin/sh
-        - -c
-        - automation/test.sh
-        env:
-        - name: TARGET
-          value: k8s-1.24-sig-network
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-        name: ""
-        resources:
-          requests:
-            memory: 29Gi
-        securityContext:
-          privileged: true
-      nodeSelector:
-        type: bare-metal-external
-  - always_run: true
-    annotations:
-      fork-per-release: "true"
-      testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
-    decorate: true
-    decoration_config:
-      grace_period: 5m0s
-      timeout: 4h0m0s
-    labels:
-      preset-bazel-cache: "true"
-      preset-bazel-unnested: "true"
-      preset-docker-mirror-proxy: "true"
-      preset-podman-in-container-enabled: "true"
-      preset-podman-shared-images: "true"
-      preset-shared-images: "true"
-    max_concurrency: 11
-    name: pull-kubevirt-e2e-k8s-1.24-sig-storage
-    skip_branches:
-    - release-\d+\.\d+
-    spec:
-      containers:
-      - command:
-        - /usr/local/bin/runner.sh
-        - /bin/sh
-        - -c
-        - automation/test.sh
-        env:
-        - name: TARGET
-          value: k8s-1.24-sig-storage
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-        name: ""
-        resources:
-          requests:
-            memory: 29Gi
-        securityContext:
-          privileged: true
-      nodeSelector:
-        type: bare-metal-external
-  - always_run: true
-    annotations:
-      fork-per-release: "true"
-      testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
-    decorate: true
-    decoration_config:
-      grace_period: 5m0s
-      timeout: 7h0m0s
-    labels:
-      preset-bazel-cache: "true"
-      preset-bazel-unnested: "true"
-      preset-docker-mirror-proxy: "true"
-      preset-podman-in-container-enabled: "true"
-      preset-podman-shared-images: "true"
-      preset-shared-images: "true"
-    max_concurrency: 11
-    name: pull-kubevirt-e2e-k8s-1.24-sig-compute
-    skip_branches:
-    - release-\d+\.\d+
-    spec:
-      containers:
-      - command:
-        - /usr/local/bin/runner.sh
-        - /bin/sh
-        - -c
-        - automation/test.sh
-        env:
-        - name: TARGET
-          value: k8s-1.24-sig-compute
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-        name: ""
-        resources:
-          requests:
-            memory: 29Gi
-        securityContext:
-          privileged: true
-      nodeSelector:
-        type: bare-metal-external
-  - always_run: true
-    annotations:
-      fork-per-release: "true"
-      testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
-    decorate: true
-    decoration_config:
-      grace_period: 5m0s
-      timeout: 7h0m0s
-    labels:
-      preset-bazel-cache: "true"
-      preset-bazel-unnested: "true"
-      preset-docker-mirror-proxy: "true"
-      preset-podman-in-container-enabled: "true"
-      preset-podman-shared-images: "true"
-      preset-shared-images: "true"
-    max_concurrency: 11
-    name: pull-kubevirt-e2e-k8s-1.24-operator
-    skip_branches:
-    - release-\d+\.\d+
-    spec:
-      containers:
-      - command:
-        - /usr/local/bin/runner.sh
-        - /bin/sh
-        - -c
-        - automation/test.sh
-        env:
-        - name: TARGET
-          value: k8s-1.24-sig-operator
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-        name: ""
-        resources:
-          requests:
-            memory: 29Gi
-        securityContext:
-          privileged: true
-      nodeSelector:
-        type: bare-metal-external
-  - always_run: true
-    annotations:
-      fork-per-release: "true"
-      testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -1783,7 +1351,9 @@ presubmits:
         env:
         - name: TARGET
           value: k8s-1.25-sig-network
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1796,7 +1366,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -1822,7 +1392,7 @@ presubmits:
         env:
         - name: TARGET
           value: k8s-1.25-sig-storage
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1835,7 +1405,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -1861,7 +1431,9 @@ presubmits:
         env:
         - name: TARGET
           value: k8s-1.25-sig-compute
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1874,7 +1446,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -1903,7 +1475,7 @@ presubmits:
           value: k8s-1.25-sig-compute
         - name: KUBEVIRT_FIPS
           value: "1"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1916,7 +1488,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -1942,7 +1514,9 @@ presubmits:
         env:
         - name: TARGET
           value: k8s-1.25-sig-operator
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1955,7 +1529,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -1980,10 +1554,12 @@ presubmits:
         - automation/test.sh
         env:
         - name: TARGET
-          value: k8s-1.26-centos9-sig-network-no-istio
+          value: k8s-1.26-centos9-sig-network
         - name: KUBEVIRT_PSA
           value: "true"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -1996,7 +1572,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -2024,7 +1600,7 @@ presubmits:
           value: k8s-1.26-centos9-sig-storage
         - name: KUBEVIRT_PSA
           value: "true"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -2037,7 +1613,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -2065,7 +1641,11 @@ presubmits:
           value: k8s-1.26-centos9-sig-compute
         - name: KUBEVIRT_PSA
           value: "true"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        - name: KUBEVIRT_PROVIDER_EXTRA_ARGS
+          value: "--usb 30M --usb 40M"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -2078,7 +1658,7 @@ presubmits:
     annotations:
       fork-per-release: "true"
       testgrid-dashboards: kubevirt-presubmits
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -2106,7 +1686,9 @@ presubmits:
           value: k8s-1.26-centos9-sig-operator
         - name: KUBEVIRT_PSA
           value: "true"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -2116,10 +1698,9 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
   - always_run: false
-    optional: true
     annotations:
-      testgrid-dashboards: kubevirt-presubmits
       fork-per-release: "true"
+      testgrid-dashboards: kubevirt-presubmits
     cluster: ibm-prow-jobs
     decorate: true
     decoration_config:
@@ -2137,8 +1718,9 @@ presubmits:
       preset-pgp-bot-key: "true"
     max_concurrency: 1
     name: pull-kubevirt-e2e-k8s-1.26-sev
+    optional: true
     skip_branches:
-      - release-\d+\.\d+
+    - release-\d+\.\d+
     spec:
       containers:
       - command:
@@ -2179,10 +1761,430 @@ presubmits:
           value: /kubeconfig
         - name: IMAGE_PULL_POLICY
           value: Always
-        image: quay.io/kubevirtci/golang:v20230105-1dbefc0
+        image: quay.io/kubevirtci/golang:v20230801-94954c0
         name: ""
         resources:
           requests:
             memory: 4Gi
+        securityContext:
+          privileged: true
+  - always_run: true
+    annotations:
+      fork-per-release: "true"
+      testgrid-dashboards: kubevirt-presubmits
+    cluster: kubevirt-prow-workloads
+    decorate: true
+    decoration_config:
+      grace_period: 5m0s
+      timeout: 4h0m0s
+    labels:
+      preset-bazel-cache: "true"
+      preset-bazel-unnested: "true"
+      preset-docker-mirror-proxy: "true"
+      preset-podman-in-container-enabled: "true"
+      preset-podman-shared-images: "true"
+      preset-shared-images: "true"
+    max_concurrency: 11
+    name: pull-kubevirt-e2e-k8s-1.27-sig-network
+    skip_branches:
+    - release-\d+\.\d+
+    spec:
+      containers:
+      - command:
+        - /usr/local/bin/runner.sh
+        - /bin/sh
+        - -c
+        - automation/test.sh
+        env:
+        - name: TARGET
+          value: k8s-1.27-sig-network
+        - name: KUBEVIRT_PSA
+          value: "true"
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
+        name: ""
+        resources:
+          requests:
+            memory: 29Gi
+        securityContext:
+          privileged: true
+      nodeSelector:
+        type: bare-metal-external
+  - always_run: true
+    annotations:
+      fork-per-release: "true"
+      testgrid-dashboards: kubevirt-presubmits
+    cluster: kubevirt-prow-workloads
+    decorate: true
+    decoration_config:
+      grace_period: 5m0s
+      timeout: 4h0m0s
+    labels:
+      preset-bazel-cache: "true"
+      preset-bazel-unnested: "true"
+      preset-docker-mirror-proxy: "true"
+      preset-podman-in-container-enabled: "true"
+      preset-podman-shared-images: "true"
+      preset-shared-images: "true"
+    max_concurrency: 11
+    name: pull-kubevirt-e2e-k8s-1.27-sig-storage
+    skip_branches:
+    - release-\d+\.\d+
+    spec:
+      containers:
+      - command:
+        - /usr/local/bin/runner.sh
+        - /bin/sh
+        - -c
+        - automation/test.sh
+        env:
+        - name: TARGET
+          value: k8s-1.27-sig-storage
+        - name: KUBEVIRT_PSA
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
+        name: ""
+        resources:
+          requests:
+            memory: 29Gi
+        securityContext:
+          privileged: true
+      nodeSelector:
+        type: bare-metal-external
+  - always_run: true
+    annotations:
+      fork-per-release: "true"
+      testgrid-dashboards: kubevirt-presubmits
+    cluster: kubevirt-prow-workloads
+    decorate: true
+    decoration_config:
+      grace_period: 5m0s
+      timeout: 7h0m0s
+    labels:
+      preset-bazel-cache: "true"
+      preset-bazel-unnested: "true"
+      preset-docker-mirror-proxy: "true"
+      preset-podman-in-container-enabled: "true"
+      preset-podman-shared-images: "true"
+      preset-shared-images: "true"
+    max_concurrency: 11
+    name: pull-kubevirt-e2e-k8s-1.27-sig-compute
+    skip_branches:
+    - release-\d+\.\d+
+    spec:
+      containers:
+      - command:
+        - /usr/local/bin/runner.sh
+        - /bin/sh
+        - -c
+        - automation/test.sh
+        env:
+        - name: TARGET
+          value: k8s-1.27-sig-compute
+        - name: KUBEVIRT_PSA
+          value: "true"
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        - name: KUBEVIRT_PROVIDER_EXTRA_ARGS
+          value: "--usb 30M --usb 40M"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
+        name: ""
+        resources:
+          requests:
+            memory: 29Gi
+        securityContext:
+          privileged: true
+      nodeSelector:
+        type: bare-metal-external
+  - always_run: false
+    annotations:
+      fork-per-release: "true"
+      testgrid-dashboards: kubevirt-presubmits
+    cluster: kubevirt-prow-workloads
+    decorate: true
+    decoration_config:
+      grace_period: 5m0s
+      timeout: 7h0m0s
+    labels:
+      preset-bazel-cache: "true"
+      preset-bazel-unnested: "true"
+      preset-docker-mirror-proxy: "true"
+      preset-podman-in-container-enabled: "true"
+      preset-podman-shared-images: "true"
+      preset-shared-images: "true"
+    max_concurrency: 11
+    name: pull-kubevirt-e2e-k8s-1.27-sig-compute-realtime
+    skip_branches:
+    - release-\d+\.\d+
+    spec:
+      containers:
+      - command:
+        - /usr/local/bin/runner.sh
+        - /bin/sh
+        - -c
+        - automation/test.sh
+        env:
+        - name: TARGET
+          value: k8s-1.27-sig-compute-realtime
+        - name: KUBEVIRT_PSA
+          value: "true"
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
+        name: ""
+        resources:
+          requests:
+            memory: 29Gi
+        securityContext:
+          privileged: true
+      nodeSelector:
+        type: bare-metal-external
+  - always_run: true
+    annotations:
+      fork-per-release: "true"
+      testgrid-dashboards: kubevirt-presubmits
+    cluster: kubevirt-prow-workloads
+    decorate: true
+    decoration_config:
+      grace_period: 5m0s
+      timeout: 7h0m0s
+    labels:
+      preset-bazel-cache: "true"
+      preset-bazel-unnested: "true"
+      preset-docker-mirror-proxy: "true"
+      preset-podman-in-container-enabled: "true"
+      preset-podman-shared-images: "true"
+      preset-shared-images: "true"
+    max_concurrency: 11
+    name: pull-kubevirt-e2e-k8s-1.27-sig-operator
+    skip_branches:
+    - release-\d+\.\d+
+    spec:
+      containers:
+      - command:
+        - /usr/local/bin/runner.sh
+        - /bin/sh
+        - -c
+        - automation/test.sh
+        env:
+        - name: TARGET
+          value: k8s-1.27-sig-operator
+        - name: KUBEVIRT_PSA
+          value: "true"
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
+        name: ""
+        resources:
+          requests:
+            memory: 29Gi
+        securityContext:
+          privileged: true
+      nodeSelector:
+        type: bare-metal-external
+  - always_run: false
+    annotations:
+      fork-per-release: "true"
+      testgrid-dashboards: kubevirt-presubmits
+    cluster: kubevirt-prow-workloads
+    decorate: true
+    decoration_config:
+      grace_period: 5m0s
+      timeout: 4h0m0s
+    labels:
+      preset-bazel-cache: "true"
+      preset-bazel-unnested: "true"
+      preset-docker-mirror-proxy: "true"
+      preset-podman-in-container-enabled: "true"
+      preset-podman-shared-images: "true"
+      preset-shared-images: "true"
+    max_concurrency: 11
+    name: pull-kubevirt-e2e-k8s-1.28-sig-network
+    skip_branches:
+    - release-\d+\.\d+
+    spec:
+      containers:
+      - command:
+        - /usr/local/bin/runner.sh
+        - /bin/sh
+        - -c
+        - automation/test.sh
+        env:
+        - name: TARGET
+          value: k8s-1.28-sig-network
+        - name: KUBEVIRT_PSA
+          value: "true"
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
+        name: ""
+        resources:
+          requests:
+            memory: 29Gi
+        securityContext:
+          privileged: true
+      nodeSelector:
+        type: bare-metal-external
+  - always_run: false
+    annotations:
+      fork-per-release: "true"
+      testgrid-dashboards: kubevirt-presubmits
+    cluster: kubevirt-prow-workloads
+    decorate: true
+    decoration_config:
+      grace_period: 5m0s
+      timeout: 4h0m0s
+    labels:
+      preset-bazel-cache: "true"
+      preset-bazel-unnested: "true"
+      preset-docker-mirror-proxy: "true"
+      preset-podman-in-container-enabled: "true"
+      preset-podman-shared-images: "true"
+      preset-shared-images: "true"
+    max_concurrency: 11
+    name: pull-kubevirt-e2e-k8s-1.28-sig-storage
+    skip_branches:
+    - release-\d+\.\d+
+    spec:
+      containers:
+      - command:
+        - /usr/local/bin/runner.sh
+        - /bin/sh
+        - -c
+        - automation/test.sh
+        env:
+        - name: TARGET
+          value: k8s-1.28-sig-storage
+        - name: KUBEVIRT_PSA
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
+        name: ""
+        resources:
+          requests:
+            memory: 29Gi
+        securityContext:
+          privileged: true
+      nodeSelector:
+        type: bare-metal-external
+  - always_run: false
+    annotations:
+      fork-per-release: "true"
+      testgrid-dashboards: kubevirt-presubmits
+    cluster: kubevirt-prow-workloads
+    decorate: true
+    decoration_config:
+      grace_period: 5m0s
+      timeout: 7h0m0s
+    labels:
+      preset-bazel-cache: "true"
+      preset-bazel-unnested: "true"
+      preset-docker-mirror-proxy: "true"
+      preset-podman-in-container-enabled: "true"
+      preset-podman-shared-images: "true"
+      preset-shared-images: "true"
+    max_concurrency: 11
+    name: pull-kubevirt-e2e-k8s-1.28-sig-compute
+    skip_branches:
+    - release-\d+\.\d+
+    spec:
+      containers:
+      - command:
+        - /usr/local/bin/runner.sh
+        - /bin/sh
+        - -c
+        - automation/test.sh
+        env:
+        - name: TARGET
+          value: k8s-1.28-sig-compute
+        - name: KUBEVIRT_PSA
+          value: "true"
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        - name: KUBEVIRT_PROVIDER_EXTRA_ARGS
+          value: "--usb 30M --usb 40M"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
+        name: ""
+        resources:
+          requests:
+            memory: 29Gi
+        securityContext:
+          privileged: true
+      nodeSelector:
+        type: bare-metal-external
+  - always_run: false
+    annotations:
+      fork-per-release: "true"
+      testgrid-dashboards: kubevirt-presubmits
+    cluster: kubevirt-prow-workloads
+    decorate: true
+    decoration_config:
+      grace_period: 5m0s
+      timeout: 7h0m0s
+    labels:
+      preset-bazel-cache: "true"
+      preset-bazel-unnested: "true"
+      preset-docker-mirror-proxy: "true"
+      preset-podman-in-container-enabled: "true"
+      preset-podman-shared-images: "true"
+      preset-shared-images: "true"
+    max_concurrency: 11
+    name: pull-kubevirt-e2e-k8s-1.28-sig-operator
+    skip_branches:
+    - release-\d+\.\d+
+    spec:
+      containers:
+      - command:
+        - /usr/local/bin/runner.sh
+        - /bin/sh
+        - -c
+        - automation/test.sh
+        env:
+        - name: TARGET
+          value: k8s-1.28-sig-operator
+        - name: KUBEVIRT_PSA
+          value: "true"
+        - name: KUBEVIRT_WITH_ETC_IN_MEMORY
+          value: "true"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
+        name: ""
+        resources:
+          requests:
+            memory: 29Gi
+        securityContext:
+          privileged: true
+      nodeSelector:
+        type: bare-metal-external
+  - always_run: false
+    annotations:
+      fork-per-release: "true"
+    cluster: ibm-prow-jobs
+    decorate: true
+    decoration_config:
+      grace_period: 5m0s
+      timeout: 1h0m0s
+    labels:
+      preset-bazel-cache: "true"
+      preset-docker-mirror-proxy: "true"
+      preset-podman-in-container-enabled: "true"
+    max_concurrency: 11
+    name: pull-kubevirt-metrics-lint
+    run_if_changed: docs/metrics.md
+    optional: true
+    skip_branches:
+    - release-\d+\.\d+
+    spec:
+      containers:
+      - command:
+        - /usr/local/bin/runner.sh
+        - /bin/sh
+        - -c
+        - |
+          make lint-metrics
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
+        name: ""
+        resources:
+            requests:
+              memory: 4Gi
         securityContext:
           privileged: true

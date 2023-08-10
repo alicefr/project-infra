@@ -225,7 +225,7 @@ default:
       previously:
         - name: topic/storage
           color: c5def5
-    - name: sig/virtualization
+    - name: sig/compute
       color: c5def5
       target: both
       prowPlugin: label
@@ -233,8 +233,15 @@ default:
       previously:
         - name: topic/virtualization
           color: c5def5
+        - name: sig-virtualization
+          color: c5def5
     - name: sig/code-quality
       color: ce23cf
+      target: both
+      prowPlugin: label
+      addedBy: anyone
+    - name: sig/release
+      color: 2943CF
       target: both
       prowPlugin: label
       addedBy: anyone

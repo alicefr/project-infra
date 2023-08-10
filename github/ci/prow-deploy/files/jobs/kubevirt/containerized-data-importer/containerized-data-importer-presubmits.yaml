@@ -5,7 +5,7 @@ presubmits:
       - release-v1.38
       - release-v1.43
       - release-v1.49
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     annotations:
       fork-per-release: "true"
     always_run: true
@@ -19,7 +19,7 @@ presubmits:
       preset-docker-mirror-proxy: "true"
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/sh"
@@ -51,12 +51,44 @@ presubmits:
       preset-bazel-cache: "true"
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/sh"
             - "-c"
             - "make generate-verify"
+          # docker-in-docker needs privileged mode
+          securityContext:
+            privileged: true
+          resources:
+            requests:
+              memory: "4Gi"
+  - name: pull-cdi-verify-go-mod
+    skip_branches:
+      - release-v1.38
+      - release-v1.43
+      - release-v1.49
+    cluster: ibm-prow-jobs
+    annotations:
+      fork-per-release: "true"
+    always_run: true
+    optional: true
+    decorate: true
+    decoration_config:
+      timeout: 1h
+      grace_period: 5m
+    labels:
+      preset-podman-in-container-enabled: "true"
+      preset-docker-mirror-proxy: "true"
+      preset-bazel-cache: "true"
+    spec:
+      containers:
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
+          command:
+            - "/usr/local/bin/runner.sh"
+            - "/bin/sh"
+            - "-c"
+            - "make deps-verify"
           # docker-in-docker needs privileged mode
           securityContext:
             privileged: true
@@ -83,7 +115,7 @@ presubmits:
       preset-bazel-cache: "true"
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/sh"
@@ -115,7 +147,7 @@ presubmits:
       preset-bazel-cache: "true"
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/golang:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/sh"
@@ -140,7 +172,7 @@ presubmits:
       timeout: 5h
       grace_period: 5m
     max_concurrency: 6
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     labels:
       preset-podman-in-container-enabled: "true"
       preset-docker-mirror-proxy: "true"
@@ -149,7 +181,7 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/sh"
@@ -174,7 +206,7 @@ presubmits:
       timeout: 5h
       grace_period: 5m
     max_concurrency: 6
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     labels:
       preset-podman-in-container-enabled: "true"
       preset-docker-mirror-proxy: "true"
@@ -183,7 +215,7 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/sh"
@@ -208,7 +240,7 @@ presubmits:
       timeout: 5h
       grace_period: 5m
     max_concurrency: 6
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     labels:
       preset-podman-in-container-enabled: "true"
       preset-docker-mirror-proxy: "true"
@@ -217,7 +249,7 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/sh"
@@ -246,7 +278,7 @@ presubmits:
       timeout: 5h
       grace_period: 5m
     max_concurrency: 6
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     labels:
       preset-podman-in-container-enabled: "true"
       preset-docker-mirror-proxy: "true"
@@ -255,7 +287,7 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/sh"
@@ -281,10 +313,10 @@ presubmits:
     optional: false
     decorate: true
     decoration_config:
-      timeout: 5h
-      grace_period: 5m
+      timeout: 6h
+      grace_period: 10m
     max_concurrency: 6
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     labels:
       preset-podman-in-container-enabled: "true"
       preset-docker-mirror-proxy: "true"
@@ -293,12 +325,50 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/sh"
             - "-c"
             - "automation/ceph.sh"
+          # docker-in-docker needs privileged mode
+          securityContext:
+            privileged: true
+          resources:
+            requests:
+              memory: "29Gi"
+  - name: pull-containerized-data-importer-e2e-ceph-wffc
+    skip_branches:
+      - release-v1.28
+      - release-v1.34
+      - release-v1.38
+      - release-v1.43
+      - release-v1.49
+    annotations:
+      fork-per-release: "true"
+      testgrid-dashboards: kubevirt-containerized-data-importer-presubmits
+    always_run: false
+    optional: true
+    decorate: true
+    decoration_config:
+      timeout: 7h
+      grace_period: 10m
+    max_concurrency: 6
+    cluster: kubevirt-prow-workloads
+    labels:
+      preset-podman-in-container-enabled: "true"
+      preset-docker-mirror-proxy: "true"
+      preset-shared-images: "true"
+    spec:
+      nodeSelector:
+        type: bare-metal-external
+      containers:
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
+          command:
+            - "/usr/local/bin/runner.sh"
+            - "/bin/sh"
+            - "-c"
+            - "automation/ceph-wffc.sh"
           # docker-in-docker needs privileged mode
           securityContext:
             privileged: true
@@ -318,7 +388,7 @@ presubmits:
       timeout: 5h
       grace_period: 5m
     max_concurrency: 6
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     labels:
       preset-podman-in-container-enabled: "true"
       preset-docker-mirror-proxy: "true"
@@ -327,7 +397,7 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/sh"
@@ -352,7 +422,7 @@ presubmits:
       timeout: 5h
       grace_period: 5m
     max_concurrency: 6
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     labels:
       preset-podman-in-container-enabled: "true"
       preset-docker-mirror-proxy: "true"
@@ -361,7 +431,7 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/sh"
@@ -399,7 +469,7 @@ presubmits:
         env:
         - name: FOSSA_TOKEN_FILE
           value: /root/.docker/secrets/fossa/token
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:
@@ -414,3 +484,37 @@ presubmits:
       - name: kubevirtci-fossa
         secret:
           secretName: kubevirtci-fossa-token
+  - name: pull-containerized-data-importer-non-csi-hpp
+    skip_branches:
+       - release-v\d+\.\d+
+    annotations:
+      fork-per-release: "true"
+      testgrid-dashboards: kubevirt-containerized-data-importer-presubmits
+    always_run: true
+    optional: false
+    decorate: true
+    decoration_config:
+      timeout: 5h
+      grace_period: 5m
+    max_concurrency: 6
+    cluster: kubevirt-prow-workloads
+    labels:
+      preset-podman-in-container-enabled: "true"
+      preset-docker-mirror-proxy: "true"
+      preset-shared-images: "true"
+    spec:
+      nodeSelector:
+        type: bare-metal-external
+      containers:
+        - image:  quay.io/kubevirtci/bootstrap:v20230801-94954c0
+          command:
+            - "/usr/local/bin/runner.sh"
+            - "/bin/sh"
+            - "-c"
+            - "automation/non-csi-hpp.sh"
+          # docker-in-docker needs privileged mode
+          securityContext:
+            privileged: true
+          resources:
+            requests:
+              memory: "29Gi"

@@ -11,10 +11,10 @@ postsubmits:
         preset-kubevirtci-quay-credential: "true"
       branches:
         - main
-      cluster: prow-workloads
+      cluster: kubevirt-prow-workloads
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"
@@ -34,10 +34,10 @@ postsubmits:
         preset-kubevirtci-quay-credential: "true"
       branches:
         - ^\d+\.\d+\.\d+$
-      cluster: prow-workloads
+      cluster: kubevirt-prow-workloads
       spec:
         containers:
-          - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+          - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
             command:
               - "/usr/local/bin/runner.sh"
               - "/bin/bash"

@@ -6,7 +6,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-      - image: gcr.io/k8s-prow/checkconfig:v20230104-cc182b7760
+      - image: gcr.io/k8s-prow/checkconfig:v20230802-d51826a399
         args:
         - "/ko-app/checkconfig"
         - "--config-path"
@@ -20,7 +20,7 @@ presubmits:
           requests:
             memory: "500Mi"
   - name: pull-project-infra-test-robots
-    run_if_changed: "robots/.*|WORKSPACE|go_third_party.bzl"
+    run_if_changed: "robots/.*|WORKSPACE|go_third_party.bzl|go.mod"
     optional: false
     decorate: true
     cluster: ibm-prow-jobs
@@ -28,18 +28,20 @@ presubmits:
       preset-bazel-cache: "true"
     spec:
       containers:
-      - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+      - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         command:
           - "/bin/bash"
           - "-c"
-          - "bazelisk test //robots/..."
+          - |
+            make gazelle-update-repos
+            bazelisk test //robots/...
         resources:
           requests:
             memory: "8Gi"
           limits:
             memory: "8Gi"
   - name: pull-project-infra-test-releng
-    run_if_changed: "releng/.*|WORKSPACE|go_third_party.bzl"
+    run_if_changed: "releng/.*|WORKSPACE|go_third_party.bzl|go.mod"
     optional: false
     decorate: true
     cluster: ibm-prow-jobs
@@ -47,18 +49,20 @@ presubmits:
       preset-bazel-cache: "true"
     spec:
       containers:
-      - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+      - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         command:
           - "/bin/bash"
           - "-c"
-          - "bazel test //releng/..."
+          - |
+            make gazelle-update-repos
+            bazel test //releng/...
         resources:
           requests:
             memory: "4Gi"
           limits:
             memory: "4Gi"
   - name: pull-project-infra-test-external-plugins
-    run_if_changed: external-plugins/.*
+    run_if_changed: "external-plugins/.*|WORKSPACE|go_third_party.bzl|go.mod"
     cluster: ibm-prow-jobs
     optional: false
     decorate: true
@@ -66,12 +70,14 @@ presubmits:
       preset-bazel-cache: "true"
     spec:
       containers:
-      - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+      - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         command:
         - "/usr/local/bin/runner.sh"
         - "/bin/sh"
         - "-c"
-        - "bazelisk test //external-plugins/..."
+        - |
+          make gazelle-update-repos
+          bazelisk test //external-plugins/...
         securityContext:
           runAsUser: 0
         resources:
@@ -80,7 +86,7 @@ presubmits:
           limits:
             memory: "8Gi"
   - name: pull-project-infra-test-github-ci-services
-    run_if_changed: "github/ci/services/.*|WORKSPACE|go_third_party.bzl"
+    run_if_changed: "github/ci/services/.*|WORKSPACE|go_third_party.bzl|go.mod"
     optional: false
     decorate: true
     cluster: ibm-prow-jobs
@@ -88,17 +94,47 @@ presubmits:
       preset-bazel-cache: "true"
     spec:
       containers:
-      - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+      - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         command:
         - "/usr/local/bin/runner.sh"
         - "/bin/sh"
         - "-c"
-        - "bazel build //github/ci/services/..."
+        - |
+          make gazelle-update-repos
+          bazel build //github/ci/services/...
         resources:
           requests:
-            memory: "2Gi"
+            memory: "4Gi"
           limits:
-            memory: "2Gi"
+            memory: "4Gi"
+        securityContext:
+          runAsUser: 0
+  - name: pull-project-infra-test-bazel-config
+    run_if_changed: "github/ci/services/.*|external-plugins/.*|releng/.*|robots/.*|go.mod"
+    decorate: true
+    cluster: ibm-prow-jobs
+    labels:
+      preset-bazel-cache: "true"
+    spec:
+      containers:
+      - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
+        command:
+        - "/usr/local/bin/runner.sh"
+        - "/bin/sh"
+        - "-ce"
+        - |
+          make gazelle gazelle-update-repos
+          if [ $(git status --short | wc -l) -gt 0 ]; then
+            echo "Bazel configs need an update"
+            echo "Uncommitted changes:"
+            git diff
+            exit 1
+          fi
+        resources:
+          requests:
+            memory: "4Gi"
+          limits:
+            memory: "4Gi"
         securityContext:
           runAsUser: 0
   - name: build-kubevirt-infra-bootstrap-image
@@ -112,7 +148,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -137,7 +173,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -164,7 +200,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -191,7 +227,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -218,7 +254,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -249,7 +285,7 @@ presubmits:
       base_ref: main
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -277,7 +313,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -304,7 +340,7 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -328,10 +364,10 @@ presubmits:
       preset-podman-in-container-enabled: "true"
       preset-docker-mirror-proxy: "true"
       preset-kubevirtci-quay-credential: "true"
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -355,10 +391,10 @@ presubmits:
       preset-podman-in-container-enabled: "true"
       preset-docker-mirror-proxy: "true"
       preset-kubevirtci-quay-credential: "true"
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -387,12 +423,12 @@ presubmits:
     cluster: ibm-prow-jobs
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
             - "-ce"
-            - "cd images && ./publish_image.sh -b vm-image-builder quay.io kubevirtci"
+            - "cd images && ./publish_multiarch_image.sh -a -b vm-image-builder quay.io kubevirtci"
           # docker-in-docker needs privileged mode
           securityContext:
             privileged: true
@@ -401,31 +437,6 @@ presubmits:
               memory: "1Gi"
             limits:
               memory: "1Gi"
-  - name: build-kubot-image
-    always_run: false
-    run_if_changed: "images/kubot/.*"
-    decorate: true
-    labels:
-      preset-podman-in-container-enabled: "true"
-      preset-docker-mirror-proxy: "true"
-      preset-kubevirtci-quay-credential: "true"
-    cluster: ibm-prow-jobs
-    spec:
-      containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-          command:
-            - "/usr/local/bin/runner.sh"
-            - "/bin/bash"
-            - "-ce"
-            - "cd images && ./publish_image.sh -b kubot quay.io kubevirtci"
-          # docker-in-docker needs privileged mode
-          securityContext:
-            privileged: true
-          resources:
-            requests:
-              memory: "4Gi"
-            limits:
-              memory: "4Gi"
   - name: pull-project-infra-prow-deploy-test
     always_run: false
     run_if_changed: "github/ci/prow-deploy/.*"
@@ -435,14 +446,12 @@ presubmits:
       preset-docker-mirror-proxy: "true"
       preset-gcs-credentials: "true"
       preset-pgp-bot-key: "true"
-    cluster: prow-workloads
+    cluster: ibm-prow-jobs
     spec:
-      nodeSelector:
-        type: bare-metal-external
       securityContext:
         runAsUser: 0
       containers:
-        - image: quay.io/kubevirtci/prow-deploy:v20230124-4015612
+        - image: quay.io/kubevirtci/prow-deploy:v20230606-d5cd724
           env:
           - name: GITHUB_TOKEN
             value: "/etc/github/oauth"
@@ -456,9 +465,11 @@ presubmits:
             privileged: true
           resources:
             requests:
-              memory: "29Gi"
+              cpu: "2"
+              memory: "8Gi"
             limits:
-              memory: "29Gi"
+              cpu: "2"
+              memory: "8Gi"
           volumeMounts:
           - name: molecule-docker
             mountPath: /tmp/prow-deploy-molecule
@@ -477,12 +488,12 @@ presubmits:
     labels:
       preset-podman-in-container-enabled: "true"
       preset-docker-mirror-proxy: "true"
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     spec:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -514,12 +525,12 @@ presubmits:
     labels:
       preset-podman-in-container-enabled: "true"
       preset-docker-mirror-proxy: "true"
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     spec:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -551,12 +562,12 @@ presubmits:
     labels:
       preset-podman-in-container-enabled: "true"
       preset-docker-mirror-proxy: "true"
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     spec:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -581,43 +592,6 @@ presubmits:
               memory: "16Gi"
             limits:
               memory: "16Gi"
-  - name: pull-project-infra-sippy-deploy-test
-    optional: false
-    run_if_changed: "github/ci/services/sippy/.*|github/ci/services/common/.*|WORKSPACE|go_third_party.bzl"
-    decorate: true
-    labels:
-      preset-podman-in-container-enabled: "true"
-      preset-docker-mirror-proxy: "true"
-    cluster: prow-workloads
-    spec:
-      nodeSelector:
-        type: bare-metal-external
-      containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-          command:
-            - "/usr/local/bin/runner.sh"
-            - "/bin/bash"
-            - "-c"
-            - |
-              # install kind
-              curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
-              chmod +x ./kind && mv ./kind /usr/local/bin/kind
-
-              # create test cluster
-              kind create cluster --image quay.io/kubevirtci/kind:v1.21.1
-
-              ./github/ci/services/sippy/hack/deploy.sh testing
-
-              bazelisk test //github/ci/services/sippy/e2e:go_default_test --test_output=all --test_arg=-test.v
-          # docker-in-docker needs privileged mode
-          securityContext:
-            privileged: true
-            runAsUser: 0
-          resources:
-            requests:
-              memory: "16Gi"
-            limits:
-              memory: "16Gi"
   - name: pull-project-infra-prometheus-stack-deploy-test
     optional: false
     run_if_changed: "github/ci/services/prometheus-stack/.*|github/ci/services/common/.*|WORKSPACE|go_third_party.bzl"
@@ -625,12 +599,12 @@ presubmits:
     labels:
       preset-podman-in-container-enabled: "true"
       preset-docker-mirror-proxy: "true"
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     spec:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/bash"
@@ -655,81 +629,6 @@ presubmits:
               memory: "16Gi"
             limits:
               memory: "16Gi"
-  - name: pull-project-infra-kuberhealthy-deploy-test
-    optional: false
-    run_if_changed: "github/ci/services/kuberhealthy/.*|github/ci/services/common/.*|WORKSPACE|go_third_party.bzl"
-    decorate: true
-    labels:
-      preset-podman-in-container-enabled: "true"
-      preset-docker-mirror-proxy: "true"
-    cluster: prow-workloads
-    spec:
-      nodeSelector:
-        type: bare-metal-external
-      containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-          command:
-            - "/usr/local/bin/runner.sh"
-            - "/bin/bash"
-            - "-c"
-            - |
-              # install kind
-              curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
-              chmod +x ./kind && mv ./kind /usr/local/bin/kind
-
-              # create test cluster
-              kind create cluster --image quay.io/kubevirtci/kind:v1.21.1
-
-              ./github/ci/services/kuberhealthy/hack/deploy.sh testing
-
-              bazelisk test //github/ci/services/kuberhealthy/e2e:go_default_test --test_output=all --test_arg=-test.v
-          # docker-in-docker needs privileged mode
-          securityContext:
-            privileged: true
-            runAsUser: 0
-          resources:
-            requests:
-              memory: "16Gi"
-            limits:
-              memory: "16Gi"
-  - name: pull-project-infra-kubot-deploy-test
-    optional: false
-    run_if_changed: "github/ci/services/kubot/.*|github/ci/services/common/.*|WORKSPACE|go_third_party.bzl"
-    decorate: true
-    labels:
-      preset-podman-in-container-enabled: "true"
-      preset-docker-mirror-proxy: "true"
-      preset-bazel-cache: "true"
-    cluster: prow-workloads
-    spec:
-      nodeSelector:
-        type: bare-metal-external
-      containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
-          command:
-            - "/usr/local/bin/runner.sh"
-            - "/bin/bash"
-            - "-c"
-            - |
-              # install kind
-              curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
-              chmod +x ./kind && mv ./kind /usr/local/bin/kind
-
-              # create test cluster
-              kind create cluster --image quay.io/kubevirtci/kind:v1.21.1
-
-              ./github/ci/services/kubot/hack/deploy.sh testing
-
-              bazelisk test //github/ci/services/kubot/e2e:go_default_test --test_output=all --test_arg=-test.v
-          # docker-in-docker needs privileged mode
-          securityContext:
-            privileged: true
-            runAsUser: 0
-          resources:
-            requests:
-              memory: "16Gi"
-            limits:
-              memory: "16Gi"
   - name: pull-project-infra-check-testgrid-config
     run_if_changed: '^github/ci/prow-deploy/files/jobs/.*$|^github/ci/testgrid/gen-config\.yaml$|^github/ci/testgrid/default\.yaml$'
     decorate: true
@@ -744,7 +643,7 @@ presubmits:
       base_ref: master
     spec:
       containers:
-      - image: quay.io/kubevirtci/golang:v20230105-1dbefc0
+      - image: quay.io/kubevirtci/golang:v20230801-94954c0
         command:
         - github/ci/testgrid/hack/check.sh
         securityContext:
@@ -756,7 +655,7 @@ presubmits:
             memory: "8Gi"
         env:
         - name: GIMME_GO_VERSION
-          value: "1.18"
+          value: "1.19"
   - name: pull-kubevirt-org-github-config-updater
     run_if_changed: '^github/ci/prow-deploy/files/orgs\.yaml$'
     annotations:
@@ -772,7 +671,7 @@ presubmits:
     spec:
       containers:
       - name: peribolos
-        image: gcr.io/k8s-prow/peribolos:v20230104-cc182b7760
+        image: gcr.io/k8s-prow/peribolos:v20230802-d51826a399
         command:
         - /ko-app/peribolos
         args:
@@ -805,7 +704,7 @@ presubmits:
     spec:
       containers:
       - name: label-sync
-        image: gcr.io/k8s-prow/label_sync:v20230104-cc182b7760
+        image: gcr.io/k8s-prow/label_sync:v20230802-d51826a399
         command: [ "/ko-app/label_sync" ]
         args:
         - --config=github/ci/prow-deploy/files/labels.yaml
@@ -828,7 +727,7 @@ presubmits:
     spec:
       containers:
       - name: label-sync
-        image: gcr.io/k8s-prow/label_sync:v20230104-cc182b7760
+        image: gcr.io/k8s-prow/label_sync:v20230802-d51826a399
         command: [ "/ko-app/label_sync" ]
         args:
         - --config=github/ci/prow-deploy/files/labels.yaml
@@ -847,7 +746,7 @@ presubmits:
     run_if_changed: 'robots/cmd/job-config-validator/.*|go.mod|go.sum'
     spec:
       containers:
-      - image: quay.io/kubevirtci/golang:v20230105-1dbefc0
+      - image: quay.io/kubevirtci/golang:v20230801-94954c0
         env:
         - name: GIMME_GO_VERSION
           value: "1.19"

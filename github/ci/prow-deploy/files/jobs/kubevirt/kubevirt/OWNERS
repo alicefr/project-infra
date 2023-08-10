@@ -8,11 +8,13 @@ filters:
   .*:
     approvers:
     - acardace
+    - alicefr
     - alonakaplan
     - davidvossel
     - dhiller
     - enp0s3
     - fabiand
+    - iholder101
     - jean-edouard
     - mhenriks
     - rmohr

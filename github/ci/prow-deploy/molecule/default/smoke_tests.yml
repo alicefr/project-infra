@@ -1,10 +1,13 @@
 - name: deploy ingress controller
   shell: |
     kubectl apply -f '{{ project_infra_root }}/github/ci/prow-deploy/kustom/overlays/{{ deploy_environment }}/resources/ingress-nginx-controller.yaml'
+    while [[ $(kubectl get pods --namespace ingress-nginx --selector=app.kubernetes.io/component=controller 2>&1) =~ ^No.resources.found.*$ ]]; do
+      echo "waiting for pods"; sleep 1;
+    done
     kubectl wait --namespace ingress-nginx \
-      --for=condition=ready pod \
-      --selector=app.kubernetes.io/component=controller \
-      --timeout=180s
+          --for=condition=ready pod \
+          --selector=app.kubernetes.io/component=controller \
+          --timeout=300s
   changed_when: false
   environment:
     KUBECONFIG: '{{ kubeconfig_path }}'
@@ -50,10 +53,3 @@
       --address="http://{{ deckUrl }}/hook" \
       --hmac {{ prowHmac }}
   changed_when: false
-
-- name: verify SRIOV nodes patched
-  shell: |
-    timeout 60s bash -c "until kubectl get node {{ item.name }} -oyaml | grep prow/sriov | grep {{ item.capacity }} | wc -l | grep 2; do sleep 1; done"
-  loop: "{{ SRIOVNodes }}"
-  environment:
-    KUBECONFIG: "{{ kubeconfig_path }}"

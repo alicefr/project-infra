@@ -27,24 +27,24 @@ spec:
       labels:
         severity: warning
         namespace: monitoring
-    - alert: HostUnusualDiskReadRate
-      annotations:
-        summary: Host unusual disk read rate (instance {{ $labels.instance }})
-        description: "Disk is probably reading too much data (> 400 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      expr: sum by (instance) (rate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 400
-      for: 5m
-      labels:
-        severity: warning
-        namespace: monitoring
-    - alert: HostUnusualDiskWriteRate
-      annotations:
-        summary: Host unusual disk write rate (instance {{ $labels.instance }})
-        description: "Disk is probably writing too much data (> 200 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      expr: sum by (instance) (rate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 200
-      for: 5m
-      labels:
-        severity: warning
-        namespace: monitoring
+#    - alert: HostUnusualDiskReadRate
+#      annotations:
+#        summary: Host unusual disk read rate (instance {{ $labels.instance }})
+#        description: "Disk is probably reading too much data (> 400 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+#      expr: sum by (instance) (rate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 400
+#      for: 5m
+#      labels:
+#        severity: warning
+#        namespace: monitoring
+#    - alert: HostUnusualDiskWriteRate
+#      annotations:
+#        summary: Host unusual disk write rate (instance {{ $labels.instance }})
+#        description: "Disk is probably writing too much data (> 200 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+#      expr: sum by (instance) (rate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 200
+#      for: 5m
+#      labels:
+#        severity: warning
+#        namespace: monitoring
     - alert: HostUnusualDiskReadLatency
       annotations:
         summary: Host unusual disk read latency (instance {{ $labels.instance }})
@@ -132,24 +132,25 @@ spec:
 
   - name: node-exporter_network.rules
     rules:
-    - alert: HostUnusualNetworkThroughputIn
-      annotations:
-        summary: Host unusual network throughput in (instance {{ $labels.instance }})
-        description: "Host network interfaces are probably receiving too much data (> 3000 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      expr: sum by (instance) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 3000
-      for: 5m
-      labels:
-        severity: warning
-        namespace: monitoring
-    - alert: HostUnusualNetworkThroughputOut
-      annotations:
-        summary: Host unusual network throughput out (instance {{ $labels.instance }})
-        description: "Host network interfaces are probably sending too much data (> 3000 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      expr: sum by (instance) (rate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > 3000
-      for: 5m
-      labels:
-        severity: warning
-        namespace: monitoring
+#    - alert: HostUnusualNetworkThroughputIn
+#      annotations:
+#        summary: Host unusual network throughput in (instance {{ $labels.instance }})
+#        description: "Host network interfaces are probably receiving too much data (> 3000 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+#      expr: sum by (instance) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 3000
+#      for: 5m
+#      labels:
+#        severity: warning
+#        namespace: monitoring
+# FIXME: turned off since they were flapping
+#    - alert: HostUnusualNetworkThroughputOut
+#      annotations:
+#        summary: Host unusual network throughput out (instance {{ $labels.instance }})
+#        description: "Host network interfaces are probably sending too much data (> 3000 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+#      expr: sum by (instance) (rate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > 3000
+#      for: 5m
+#      labels:
+#        severity: warning
+#        namespace: monitoring
     - alert: HostNetworkReceiveErrors
       annotations:
         summary: Host Network Receive Errors (instance {{ $labels.instance }})
@@ -178,8 +179,8 @@ spec:
         severity: warning
         namespace: monitoring
 
-  - name: node-exporter_cpu.rules
-    rules:
+#  - name: node-exporter_cpu.rules
+#    rules:
 #    - alert: HostHighCpuLoad
 #      annotations:
 #        summary: Host high CPU load (instance {{ $labels.instance }})
@@ -189,16 +190,17 @@ spec:
 #      labels:
 #        severity: warning
 #        namespace: monitoring
-    - alert: HostContextSwitching
-      annotations:
-        summary: Host context switching (instance {{ $labels.instance }})
-        description: "Context switching is growing on node (> 8000 / s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      expr: (rate(node_context_switches_total[5m])) / (count without(cpu, mode) (node_cpu_seconds_total{mode="idle"})) > 8000
-      for: 6m
-      labels:
-        severity: warning
-        namespace: monitoring
-
+# FIXME: turned off since they were flapping
+#    - alert: HostContextSwitching
+#      annotations:
+#        summary: Host context switching (instance {{ $labels.instance }})
+#        description: "Context switching is growing on node (> 8000 / s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+#      expr: (rate(node_context_switches_total[5m])) / (count without(cpu, mode) (node_cpu_seconds_total{mode="idle"})) > 8000
+#      for: 6m
+#      labels:
+#        severity: warning
+#        namespace: monitoring
+#
   - name: node-exporter_misc.rules
     rules:
     - alert: HostClockSkew

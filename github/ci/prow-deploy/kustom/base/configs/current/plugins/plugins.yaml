@@ -143,6 +143,7 @@ plugins:
     - owners-label
     - release-note
     - trigger
+    - help
 
   kubevirt/common-templates:
     plugins:
@@ -151,6 +152,7 @@ plugins:
     - owners-label
     - release-note
     - trigger
+    - help
 
   kubevirt/community:
     plugins:
@@ -166,6 +168,7 @@ plugins:
     - owners-label
     - release-note
     - trigger
+    - help
 
   kubevirt/containerized-data-importer:
     plugins:
@@ -242,6 +245,15 @@ plugins:
     - approve
     - lgtm
     - trigger
+
+  kubevirt/kubevirt.core:
+    plugins:
+    - approve
+    - lgtm
+    - owners-label
+    - release-note
+    - trigger
+    - help
 
   kubevirt/kubevirt:
     plugins:
@@ -371,6 +383,13 @@ plugins:
     - lgtm
     - trigger
 
+  kubevirt/sig-release:
+    plugins:
+    - approve
+    - lgtm
+    - owners-label
+    - trigger
+
   kubevirt/ssp-operator:
     plugins:
     - approve
@@ -378,6 +397,16 @@ plugins:
     - owners-label
     - release-note
     - trigger
+    - help
+
+  kubevirt/managed-tenant-quota:
+    plugins:
+    - approve
+    - lgtm
+    - owners-label
+    - release-note
+    - trigger
+    - help
 
   kubevirt/terraform-provider-kubevirt:
     plugins:
@@ -407,6 +436,7 @@ plugins:
     - owners-label
     - release-note
     - trigger
+    - help
 
   kubevirt/vm-import-operator:
     plugins:
@@ -508,6 +538,7 @@ triggers:
   - kubevirt/node-labeller
   - kubevirt/kubevirt-template-validator
   - kubevirt/kubevirt-ssp-operator
+  - kubevirt/sig-release
   - kubevirt/ssp-operator
   - kubevirt/must-gather
   - kubevirt/demo
@@ -526,6 +557,8 @@ triggers:
   - kubevirt/secrets
   - kubevirt/test-benchmarks
   - kubevirt/vm-console-proxy
+  - kubevirt/kubevirt.core
+  - kubevirt/managed-tenant-quota
 - repos:
   - virtblocks/virtblocks
 - repos:
@@ -576,6 +609,9 @@ approve:
   - kubevirt/cloud-provider-kubevirt
   - kubevirt/test-benchmarks
   - kubevirt/vm-console-proxy
+  - kubevirt/sig-release
+  - kubevirt/kubevirt.core
+  - kubevirt/managed-tenant-quota
   require_self_approval: true
   lgtm_acts_as_approve: false
   ignore_review_state: true
@@ -631,6 +667,9 @@ lgtm:
   - kubevirt/secrets
   - kubevirt/test-benchmarks
   - kubevirt/vm-console-proxy
+  - kubevirt/sig-release
+  - kubevirt/kubevirt.core
+  - kubevirt/managed-tenant-quota
   review_acts_as_lgtm: true
 
 override:

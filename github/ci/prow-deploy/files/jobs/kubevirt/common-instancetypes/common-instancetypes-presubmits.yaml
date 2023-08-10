@@ -27,7 +27,7 @@ presubmits:
       - main
     always_run: false
     run_if_changed: "^common.*yaml"
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     decorate: true
     decoration_config:
       grace_period: 5m0s
@@ -48,7 +48,10 @@ presubmits:
         - "/bin/sh"
         - "-c"
         - "make kubevirt-up && make kubevirt-sync && make kubevirt-functest"
-        image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        env:
+        - name: KUBEVIRT_MEMORY_SIZE
+          value: "8192"
+        image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         name: ""
         resources:
           requests:

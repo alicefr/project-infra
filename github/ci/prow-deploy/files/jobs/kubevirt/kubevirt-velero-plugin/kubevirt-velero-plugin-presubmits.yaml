@@ -18,7 +18,7 @@ presubmits:
       preset-docker-mirror-proxy: "true"
     spec:
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/sh"
@@ -31,7 +31,7 @@ presubmits:
             requests:
               memory: "4Gi"
   - name: pull-kvp-functional-test
-    cluster: prow-workloads
+    cluster: kubevirt-prow-workloads
     skip_branches:
       - release-\d+\.\d+
     annotations:
@@ -51,7 +51,7 @@ presubmits:
       nodeSelector:
         type: bare-metal-external
       containers:
-        - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+        - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
           command:
             - "/usr/local/bin/runner.sh"
             - "/bin/sh"

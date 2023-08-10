@@ -45,7 +45,7 @@ setup_ca(){
 cleanup_pinc() {
     if [[ "${PODMAN_IN_CONTAINER_ENABLED:-false}" == "true" ]]; then
         echo "Cleaning up after podman"
-        podman ps -aq | xargs -r podman rm -f || true
+        podman rm --all --force || true
         kill "$(</var/run/podman.pid)" || true
         wait "$(</var/run/podman.pid)" || true
     fi
@@ -91,7 +91,7 @@ if [[ "${PODMAN_IN_CONTAINER_ENABLED}" == "true" ]]; then
     )
     # the service can be started but the socket not ready, wait for ready
     WAIT_N=0
-    MAX_WAIT=10
+    MAX_WAIT=20
     while true; do
         # wait for podman socket to be ready
         curl --unix-socket "${PODMAN_SOCKET}" http://d/v3.0.0/libpod/info >/dev/null 2>&1 && break
@@ -102,6 +102,7 @@ if [[ "${PODMAN_IN_CONTAINER_ENABLED}" == "true" ]]; then
         else
             echo "Reached maximum attempts, not waiting any longer..."
 	    echo "Podman daemon failed to start successfully"
+            cat /var/log/podman.log
             exit 1
         fi
     done

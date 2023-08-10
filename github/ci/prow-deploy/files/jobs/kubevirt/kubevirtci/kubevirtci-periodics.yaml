@@ -16,10 +16,10 @@ periodics:
   labels:
     preset-gcs-credentials: "true"
     preset-shared-images: "true"
-  cluster: prow-workloads
+  cluster: kubevirt-prow-workloads
   spec:
     containers:
-      - image: quay.io/kubevirtci/bootstrap:v20230105-1dbefc0
+      - image: quay.io/kubevirtci/bootstrap:v20230801-94954c0
         env:
           - name: OS
             value: CentOS_8_Stream
@@ -30,7 +30,7 @@ periodics:
           - name: BASE_REPOID
             value: devel_kubic_libcontainers_stable
           - name: CRIO_VERSIONS
-            value: "1.24,1.25,1.26"
+            value: "1.22,1.23,1.24,1.25,1.26,1.27"
         command: ["/bin/sh", "-ce"]
         args:
           - |
@@ -59,7 +59,7 @@ periodics:
     preset-docker-mirror: "true"
     preset-gcs-credentials: "true"
     preset-github-credentials: "true"
-  cluster: prow-workloads
+  cluster: ibm-prow-jobs
   spec:
     containers:
     - image: quay.io/kubevirtci/pr-creator:v20230103-9f4e101
@@ -91,7 +91,7 @@ periodics:
   labels:
     preset-docker-mirror: "true"
     preset-github-credentials: "true"
-  cluster: prow-workloads
+  cluster: kubevirt-prow-workloads
   spec:
     containers:
     - image: quay.io/kubevirtci/pr-creator:v20230103-9f4e101

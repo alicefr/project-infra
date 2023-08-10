@@ -31,6 +31,7 @@ orgs:
       - akrejcir
       - alicefr
       - AlonaKaplan
+      - alaypatel07
       - alonsadan
       - alosadagrande
       - alromeros
@@ -38,6 +39,7 @@ orgs:
       - andreyod
       - arnongilboa
       - ArthurSens
+      - assafad
       - ashleyschuett
       - awels
       - bardielle
@@ -71,10 +73,10 @@ orgs:
       - fedepaol
       - fgimenez
       - fossedihelm
-      - fromanirh
       - gabrielecerami
       - gbenhaim
       - geetikakay
+      - germag
       - gonzolino
       - gouyang
       - gsr-shanks
@@ -122,6 +124,7 @@ orgs:
       - mareklibra
       - MarSik
       - masayag
+      - matosatti
       - matthewcarleton
       - maya-r
       - mazzystr
@@ -134,12 +137,12 @@ orgs:
       - mrnold
       - mshitrit
       - myakove
-      - mykaul
       - n1r1
       - nellyc
       - nelsonspbr
       - nertpinx
       - nirarg
+      - sudo-NithishKarthik
       - nunnatsa
       - ohadlevy
       - omeryahud
@@ -325,6 +328,12 @@ orgs:
         allow_rebase_merge: false
         description: Operator pattern for managing multi-operator products
         has_projects: true
+      k8s-seccomp-generator:
+        allow_rebase_merge: false
+        allow_squash_merge: false
+        description: Generates seccomp profile for kubernetes pods
+        has_projects: false
+        has_wiki: false
       k8s-start:
         allow_rebase_merge: false
         allow_squash_merge: false
@@ -343,6 +352,9 @@ orgs:
       kubectl-virt-plugin:
         description: Holds all scripts to create packages and manifest file required for publishing the virtctl binary as a krew package for kubectl.
         default_branch: main
+        has_projects: true
+      kubevirt.core:
+        description: Lean Ansible bindings for KubeVirt
         has_projects: true
       kubernetes-device-plugins:
         archived: true
@@ -465,9 +477,14 @@ orgs:
         description: A repo to store all our secrets for automation
         has_projects: true
         private: true
+      sig-release:
+        default_branch: main
+        description: A repo to hold and organize all the information required for KubeVirt releases
+        has_wiki: true
       ssp-operator:
-        description: Kubevirt SSP Operator
+        description: Operator that deploys additional KubeVirt resources
         has_projects: true
+        default_branch: main
       storage-demo:
         description: 'Incubating: Container images for a kubevirt storage demo environment'
         has_projects: true
@@ -551,6 +568,14 @@ orgs:
         description: Officially built and maintained containerdisks of the KubeVirt project
         default_branch: main
         has_projects: true
+      ci-performance-benchmarks:
+        description: Store for performance results of perf-report-creator
+        default_branch: main
+      managed-tenant-quota:
+        default_branch: main
+        has_projects: true
+        has_wiki: true
+        has_issues: true
     teams:
       QE:
         description: ""
@@ -576,6 +601,13 @@ orgs:
         repos:
           kubevirt-ansible: write
           qe-tools: write
+      k8s-seccomp-generator:
+        description: "team for k8s-seccomp-generator repo"
+        maintainers:
+          - alicefr
+        privacy: secret
+        repos:
+          k8s-seccomp-generator: admin
       kubectl-virt-plugin:
         description: ""
         maintainers:
@@ -586,7 +618,7 @@ orgs:
       kubesecondarydns:
         description: ""
         maintainers:
-        - AlonaKaplan
+          - AlonaKaplan
         privacy: secret
         repos:
           kubesecondarydns: admin
@@ -695,6 +727,8 @@ orgs:
           - phoracek
           - SchSeba
           - awels
+          - aburdenthehand
+          - xpivarc
         privacy: closed
         repos:
           cloud-provider-kubevirt: write
@@ -786,6 +820,17 @@ orgs:
           - isaacdorfman
         repos:
           terraform-provider-kubevirt: admin
+      release-team:
+        description: Team maintaining the release of KubeVirt
+        maintainers:
+        - aburdenthehand
+        - acardace
+        - dhiller
+        - davidvossel
+        - fabiand
+        - xpivarc
+        repos:
+          sig-release: write
       rerun-jobs-hco:
         description: can rerun failed job in the hyperconverged-cluster-operator repository
         maintainers:
@@ -914,6 +959,7 @@ orgs:
       kubevirtkubevirt-label:
         description: "Users who can apply restricted labels to any issue inside the kubevirt/kubevirt repo"
         members:
+         - iholder101
          - davidvossel
          - vladikr
          - rmohr
@@ -928,3 +974,26 @@ orgs:
          - vasiliy-ul
          - acardace
          - alicefr
+      sig-scale:
+        description: members of the scale and performance group
+        members:
+        - alaypatel07
+        - rthallisey
+        - xpivarc
+        repos:
+          ci-performance-benchmarks: admin
+      managed-tenant-quota:
+        description: members of the managed-tenant-quota group
+        members:
+          - Barakmor1
+          - vladikr
+        repos:
+          managed-tenant-quota: admin
+      kubevirt.core-maintainers:
+        description: Maintainers of kubevirt.core
+        privacy: closed
+        maintainers:
+          - 0xFelix
+          - lyarwood
+        repos:
+          kubevirt.core: admin
